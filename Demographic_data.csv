@@ -1,0 +1,188 @@
+﻿Sub ID,Age,Gender ,Handedness,Vision
+sub34_AB,22,Female,Right handed,Corrected to normal
+sub23_AB,21,Female,Right handed,Normal
+sub46_NB,20,Female,Right handed,Corrected to normal
+sub72_NB,28,Male,Right handed,Corrected to normal
+sub150_NB,27,Male,Right handed,Normal
+sub162_NB,23,Male,Right handed,Normal
+Sub38_AB,20,Female,Right handed,Normal
+sub28_AB,20,Female,Right handed,Corrected to normal
+sub107_AB,19,Female,Right handed,Corrected to normal
+sub58_NB,22,Male,Right handed,Corrected to normal
+sub125_AB,22,Female,Right handed,Normal
+sub82_NB,19,Male,Right handed,Corrected to normal
+sub45_NB,19,Male,Right handed,Normal
+sub49_NB,,,,
+sub52_NB,19,Female,Left Handed,Corrected to normal
+sub51_NB,20,Female,Right handed,Corrected to normal
+sub121_AB,22,Female,Right handed,Normal
+sub32_AB,19,Female,Right handed,Corrected to normal
+sub127_AB,20,Female,Right handed,Corrected to normal
+sub90_AB,20,Female,Right handed,Corrected to normal
+sub76_NB,20,Female,Right handed,Normal
+sub114_AB,20,Female,Right handed,Corrected to normal
+sub175_NB,,,,
+sub80_NB,,,,
+sub50_NB,20,Male,Right handed,Normal
+sub182_NB,20,Male,Right handed,Normal
+sub163_NB,20,Male,Right handed,Normal
+sub173_NB,20,Male,Right handed,Normal
+sub11_NB,19,Male,Right handed,Corrected to normal
+sub153_NB,20,Female,Right handed,Corrected to normal
+sub87_AB,20,Female,Right handed,Corrected to normal
+sub66_NB,,,,
+sub39_AB,,,,
+sub115_AB,20,Male,Right handed,Corrected to normal
+sub30_AB,20,Male,Right handed,Normal
+sub68_NB,20,Male,Right handed,Corrected to normal
+sub05_AB,,,,
+sub157_NB,20,Female,Right handed,Normal
+sub132_AB,20,Male,Left Handed,Normal
+sub152_NB,19,Male,Right handed,Corrected to normal
+sub183_NB,20,Male,Right handed,Corrected to normal
+sub108_AB,20,Female,Right handed,Corrected to normal
+sub44_NB,20,Male,Right handed,Corrected to normal
+sub25_AB,20,Male,Right handed,Corrected to normal
+sub116_AB,20,Male,Right handed,Corrected to normal
+sub18_NB,20,Female,Right handed,Normal
+sub48_NB,20,Female,Right handed,Corrected to normal
+sub19_NB ,,,,
+sub57_NB,21,Female,Right handed,Normal
+sub59_NB,21,Male,Right handed,Corrected to normal
+sub65_NB,20,Male,Right handed,Normal
+sub156_NB,21,Male,Right handed,Normal
+sub167_NB,21,Male,Right handed,Corrected to normal
+sub185_NB,21,Male,Right handed,Normal
+sub124_AB,21,Female,Right handed,Corrected to normal
+sub53_NB,19,Female,Right handed,Normal
+sub89_AB,20,Female,Right handed,Normal
+sub117_AB,,,,
+sub120_AB,21,Male,Right handed,Normal
+sub78_NB,20,Female,Right handed,Uncorrected vision difficulty
+sub154_NB,20,Female,Right handed,Corrected to normal
+sub06_AB,,,,
+sub56_NB,23,Male,Left Handed,Normal
+sub14_NB,21,Female,Right handed,Normal
+sub20_NB,22,Female,Right handed,Normal
+sub16_NB,21,Female,Left Handed,Corrected to normal
+sub148_AB,23,Female,Right handed,Corrected to normal
+sub100_AB,21,Male,Right handed,Normal
+sub43_NB,22,Male,Right handed,Normal
+sub126_AB,23,Male,Right handed,Normal
+sub15_NB,24,Male,Right handed,Normal
+sub141_AB,22,Male,Right handed,Normal
+sub99_AB,23,Male,Right handed,Normal
+sub161_NB,22,Male,Right handed,Corrected to normal
+sub61_NB,21,Male,Right handed,Normal
+sub180_NB,20,Male,Right handed,Corrected to normal
+sub123_AB,19,Male,Right handed,Corrected to normal
+sub101_AB,22,Female,Right handed,Corrected to normal
+sub74_NB,22,Male,Right handed,Corrected to normal
+sub98_AB,26,Male,Right handed,Normal
+sub70_NB,28,Male,Right handed,Normal
+sub60_NB,22,Female,Right handed,Corrected to normal
+sub71_NB,25,Female,Right handed,Normal
+sub112_AB,22,Male,Right handed,Normal
+sub22_NB,25,Female,Right handed,Normal
+sub105_AB,23,Female,Right handed,Normal
+sub85_NB,24,Female,Right handed,Corrected to normal
+sub54_NB,25,Male,Right handed,Corrected to normal
+sub149_AB,23,Male,Right handed,Normal
+sub140_AB,23,Male,Right handed,Normal
+sub130_AB,24,Male,Right handed,Normal
+sub12_NB,22,Male,Right handed,Normal
+sub37_AB,21,Female,Right handed,Normal
+sub102_AB,23,Male,Right handed,Normal
+sub27_AB,21,Female,Right handed,Normal
+sub129_AB,22,Male,Right handed,Normal
+sub146_AB,,,,
+sub166_NB,23,Male,Right handed,Normal
+sub165_NB,22,Male,Right handed,Corrected to normal
+sub97_AB,21,Male,Right handed,Normal
+sub139_AB,21,Male,Right handed,Normal
+sub03_AB,34,Male,Right handed,Normal
+sub67_NB,22,Male,Right handed,Corrected to normal
+sub69_NB,27,Male,Right handed,Corrected to normal
+sub144_AB,20,Male,Right handed,Normal
+sub135_AB,23,Male,Right handed,Corrected to normal
+sub103_AB,21,Male,Left Handed,Normal
+sub128_AB,25,Male,Right handed,Corrected to normal
+sub151_NB,25,Male,Left Handed,Normal
+sub178_NB,,,,
+sub184_NB,26,Male,Right handed,Normal
+sub86_AB,24,Male,Right handed,Corrected to normal
+sub84_NB,24,Male,Right handed,Corrected to normal
+sub10_AB,23,Female,Right handed,Normal
+sub26_AB,23,Female,Right handed,Normal
+sub62_NB,23,Female,Right handed,Normal
+sub40_AB,25,Male,Right handed,Corrected to normal
+sub176_NB,,,,
+sub172_NB,25,Male,Left Handed,Normal
+sub136_AB,24,Male,Right handed,Normal
+sub96_AB,23,Male,Right handed,Corrected to normal
+sub164_NB,25,Male,Right handed,Corrected to normal
+sub35_AB,26,Male,Right handed,Normal
+sub159_NB,27,Male,Right handed,Normal
+sub02_AB,22,Female,Right handed,Corrected to normal
+sub29_AB,,,,
+sub24_NB,22,Male,Right handed,Normal
+sub36_AB,23,Male,Right handed,Corrected to normal
+sub33_AB,23,Male,Right handed,Normal
+sub13_NB,23,Male,Right handed,Corrected to normal
+sub169_NB,21,Male,Right handed,Corrected to normal
+sub170_NB,22,Male,Left Handed,Corrected to normal
+sub174_NB,,,,
+sub73_NB,23,Male,Right handed,Normal
+sub92_AB,26,Male,Right handed,Corrected to normal
+sub64_NB,22,Male,Right handed,Normal
+sub17_NB ,,,,
+sub41_AB,22,Male,Left Handed,Normal
+sub21_NB,,,,
+sub04_AB,,,,
+sub181_NB,,,,
+sub111_AB,23,Male,Right handed,Corrected to normal
+sub109_AB,,,,
+sub104_AB,23,Male,Right handed,Normal
+sub134_AB,20,Male,Right handed,Corrected to normal
+sub75_NB,21,Male,Right handed,Corrected to normal
+sub142_AB,20,Male,Right handed,Corrected to normal
+sub08_AB,,,,
+sub160_NB,,,,
+sub147_AB,22,Female,Right handed,Normal
+sub88_AB,20,Male,Right handed,Normal
+sub94_AB,22,Male,Right handed,Normal
+sub47_NB,21,Male,Right handed,Corrected to normal
+sub155_NB,21,Male,Right handed,Corrected to normal
+sub81_NB,23,Male,Right handed,Normal
+sub122_AB,24,Male,Right handed,Normal
+sub42_NB,26,Male,Right handed,Normal
+sub63_NB,27,Male,Right handed,Normal
+sub79_NB,23,Male,Right handed,Corrected to normal
+sub137_AB,22,Male,Right handed,Corrected to normal
+sub119_AB,23,Male,Right handed,Corrected to normal
+sub118_AB,23,Male,Right handed,Corrected to normal
+sub179_NB,23,Female,Right handed,Corrected to normal
+sub113_AB,25,Male,Right handed,Corrected to normal
+sub77_NB,23,Male,Right handed,Normal
+sub145_AB,24,Male,Right handed,Corrected to normal
+sub55_NB,25,Female,Right handed,Corrected to normal
+sub168_NB,25,Male,Right handed,Uncorrected vision difficulty
+sub09_AB,26,Male,Right handed,Normal
+sub93_AB,22,Female,Right handed,Normal
+sub91_AB,22,Female,Right handed,Corrected to normal
+sub83_NB,22,Female,Right handed,Corrected to normal
+sub131_AB,21,Male,Right handed,Normal
+sub133_AB,23,Female,Right handed,Corrected to normal
+sub143_AB,24,Male,Right handed,Corrected to normal
+sub01_AB,,,,
+sub95_AB,23,Male,Right handed,Corrected to normal
+sub110_AB,25,Male,Right handed,Corrected to normal
+sub07_AB,25,Male,Right handed,Normal
+sub138_AB,26,Male,Right handed,Normal
+sub158_NB,24,Male,Right handed,Corrected to normal
+sub31_AB,24,Male,Right handed,Normal
+sub177_NB,26,Male,Right handed,Normal
+sub106_AB,23,Male,Right handed,Corrected to normal
+sub171_NB,23,Male,Right handed,Normal
+,,,,
+,,,,

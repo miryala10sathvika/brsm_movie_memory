@@ -1,0 +1,133 @@
+================================================================================
+DESCRIPTIVE STATISTICS REPORT
+BRSM Movie Memory Experiment
+================================================================================
+
+Generated: 2026-03-08 22:19:49
+
+================================================================================
+1. SAMPLE CHARACTERISTICS
+================================================================================
+
+Total Participants: 146
+Total Trials: 6800
+Average Trials per Participant: 46.6
+
+--- By Condition ---
+  NB: 79 participants (54.1%)
+  AB: 67 participants (45.9%)
+
+--- Demographics ---
+
+Age:
+  Mean ± SD: 22.0 ± 1.9 years
+  Range: 19 - 28 years
+  Median: 22 years
+
+  By Condition:
+    NB: 22.2 ± 2.1 years
+    AB: 21.9 ± 1.6 years
+
+Gender:
+  Male: 112 (76.7%)
+  Female: 34 (23.3%)
+
+  By Condition:
+    NB:
+      Male: 63
+      Female: 16
+    AB:
+      Male: 49
+      Female: 18
+
+Handedness:
+  Right handed: 139 (95.2%)
+  Left Handed: 7 (4.8%)
+
+Vision:
+  Normal: 100 (68.5%)
+  Corrected to normal: 46 (31.5%)
+
+================================================================================
+2. PERFORMANCE MEASURES
+================================================================================
+
+--- Recognition Accuracy ---
+
+Overall:
+  Mean ± SD: 0.857 ± 0.077 (85.7% ± 7.7%)
+  Median: 0.875 (87.5%)
+  Range: 0.575 - 0.988 (57.5% - 98.8%)
+  IQR: 0.825 - 0.900
+
+By Condition:
+  AB:
+    Mean ± SD: 0.838 ± 0.084 (83.8% ± 8.4%)
+    Median: 0.850 (85.0%)
+    Range: 0.575 - 0.975
+    N: 67
+  NB:
+    Mean ± SD: 0.872 ± 0.069 (87.2% ± 6.9%)
+    Median: 0.875 (87.5%)
+    Range: 0.675 - 0.988
+    N: 79
+
+--- Response Time (seconds) ---
+
+Overall:
+  Mean ± SD: 5.718 ± 1.571 seconds
+  Median: 5.470 seconds
+  Range: 3.251 - 12.180 seconds
+  IQR: 4.740 - 6.158
+
+By Condition:
+  AB:
+    Mean ± SD: 5.582 ± 1.491 seconds
+    Median: 5.399 seconds
+    Range: 3.251 - 11.633 seconds
+    N: 67
+  NB:
+    Mean ± SD: 5.834 ± 1.636 seconds
+    Median: 5.534 seconds
+    Range: 3.256 - 12.180 seconds
+    N: 79
+
+--- Confidence Ratings (1-5 scale) ---
+
+Overall:
+  Mean ± SD: 4.149 ± 0.422
+  Median: 4.225
+  Range: 2.900 - 5.000
+  IQR: 3.825 - 4.425
+
+By Condition:
+  AB:
+    Mean ± SD: 4.077 ± 0.431
+    Median: 4.100
+    Range: 2.900 - 4.900
+    N: 67
+  NB:
+    Mean ± SD: 4.209 ± 0.407
+    Median: 4.275
+    Range: 3.000 - 5.000
+    N: 79
+
+================================================================================
+3. TRIAL-LEVEL STATISTICS
+================================================================================
+
+Trial-level accuracy: 0.856 (85.6%)
+  Correct trials: 5822
+  Incorrect trials: 978
+
+By Condition:
+  AB: 0.840 (84.0%)
+    Correct: 2720 / 3240
+  NB: 0.871 (87.1%)
+    Correct: 3102 / 3560
+
+--- Response Distribution ---
+
+Overall:
+  'r': 3407 (50.1%)
+  'l': 3393 (49.9%)

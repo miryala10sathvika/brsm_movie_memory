@@ -1,0 +1,64 @@
+================================================================================
+DATA QUALITY REPORT
+================================================================================
+Abrupt movies: 45 entries
+Natural movies: 45 entries
+Target & Lures: 40 pairs
+  Found 171 total files
+AB (Abrupt) participants: 81
+NB (Natural) participants: 90
+
+
+Total participants: 187
+  - AB (Abrupt): 92
+  - NB (Natural): 93
+
+Total recognition trials: 6800
+
+--------------------------------------------------------------------------------
+DEMOGRAPHICS COMPLETENESS
+--------------------------------------------------------------------------------
+  age                 : 163/187 complete ( 12.8% missing)
+  gender              : 163/187 complete ( 12.8% missing)
+  handedness          : 163/187 complete ( 12.8% missing)
+  vision              : 163/187 complete ( 12.8% missing)
+
+--------------------------------------------------------------------------------
+RECOGNITION DATA COMPLETENESS
+--------------------------------------------------------------------------------
+  resp.corr           :  6800/ 6800 complete (  0.0% missing)
+  resp.rt             :  6800/ 6800 complete (  0.0% missing)
+  conf_radio.response :  6800/ 6800 complete (  0.0% missing)
+
+--------------------------------------------------------------------------------
+ACCURACY DISTRIBUTION
+--------------------------------------------------------------------------------
+
+  AB Condition:
+    Mean accuracy: 0.838 ± 0.084
+    Range: 0.575 - 0.975
+
+  NB Condition:
+    Mean accuracy: 0.872 ± 0.069
+    Range: 0.675 - 0.988
+
+--------------------------------------------------------------------------------
+RESPONSE TIME DISTRIBUTION (seconds)
+--------------------------------------------------------------------------------
+
+  AB Condition:
+    Mean RT: 5.582 ± 1.491
+    Range: 3.251 - 11.633
+
+  NB Condition:
+    Mean RT: 5.834 ± 1.636
+    Range: 3.256 - 12.180
+
+--------------------------------------------------------------------------------
+PROCESSING ISSUES
+--------------------------------------------------------------------------------
+
+  Files with issues: 1
+    - sub42_NB_recognitionstage_2026-01-20_09h31.14.064.csv: processing_error
+
+================================================================================
