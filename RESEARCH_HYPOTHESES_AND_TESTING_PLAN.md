@@ -157,57 +157,57 @@
 
 ---
 
-## ⚠️ **UPDATED FOR NON-NORMAL DATA** ⚠️
+## STATISTICAL TEST SELECTION GUIDE
 
-**Since your normality tests failed, we will use NON-PARAMETRIC tests throughout.**
+### **Step 1: Check Assumptions**
 
-### **Non-Parametric Test Advantages:**
-- ✅ Robust to outliers
-- ✅ No normality assumption required
-- ✅ Based on ranks (ordinal comparisons)
-- ✅ Often more appropriate for Likert-scale data (confidence ratings)
+Before any test, check:
+1. **Normality** (already planned in your visualization script)
+   - Shapiro-Wilk test
+   - Q-Q plots
+   - If p > 0.05: Normal, use parametric tests
+   - If p < 0.05: Non-normal, use non-parametric tests
+
+2. **Homogeneity of Variance** (for t-tests and ANOVAs)
+   - Levene's test
+   - If violated: Use Welch's t-test or robust ANOVA
+
+3. **Independence of Observations**
+   - Between-subjects comparisons satisfy this
+   - Within-subjects need repeated measures ANOVA
 
 ---
-
-## STATISTICAL TEST SELECTION GUIDE (NON-PARAMETRIC)
 
 ### **Test Selection Flowchart**
 
 #### **Comparing 2 Groups (AB vs NB) on 1 Variable**
 
-**✅ Mann-Whitney U Test** (Use this for H1, H2, H3, H6)
-- **What it does:** Tests if two independent samples come from same distribution
-- **Reports:** U-statistic, Z-score, p-value, rank-biserial correlation (effect size)
-- **Effect size:** r = Z / √N (small: 0.1, medium: 0.3, large: 0.5)
-- **Examples:** Overall accuracy, BB-frame accuracy, confidence, response time
+**Parametric (if assumptions met):**
+- ✅ **Independent samples t-test**
+- Report: t-statistic, df, p-value, Cohen's d
+- Example: Overall accuracy, overall RT, overall confidence
 
-**Alternative: Welch's t-test** (Robust to non-normality with large samples)
-- Use if you want to report both parametric and non-parametric
-- Can be justified with Central Limit Theorem (n > 30 per group)
+**Non-parametric (if assumptions violated):**
+- ✅ **Mann-Whitney U test**
+- Report: U-statistic, Z-score, p-value, rank-biserial correlation
+- Example: If accuracy is not normally distributed
 
 ---
 
-#### **Comparing 2 Groups Across Multiple Levels (Interaction Effects)**
+#### **Comparing 2 Groups Across Multiple Levels**
 
 **Example:** Condition (AB vs NB) × Frame Type (BB vs EM)
 
-**✅ Aligned Rank Transform (ART) ANOVA** (RECOMMENDED)
-- **R package:** `ARTool` 
-- **Python:** `statsmodels` with rank transformation
-- **What it does:** Enables factorial ANOVA on non-normal data
-- **Reports:** F-statistic, p-value, effect sizes
-- **Post-hoc:** Contrast tests using aligned ranks
+**Parametric:**
+- ✅ **Mixed ANOVA** (2-way)
+  - Between-subjects factor: Condition
+  - Within-subjects factor: Frame Type
+  - Report: F-statistic, df, p-value, η² (eta-squared)
+  - **Key interest:** Interaction effect
 
-**✅ Alternative: Separate Mann-Whitney tests with correction**
-- Test BB frames: AB vs NB
-- Test EM frames: AB vs NB  
-- Compare effect sizes
-- Apply Bonferroni correction (α = 0.05/2 = 0.025)
-
-**✅ Mixed Effects Model with Robust Estimation** (ADVANCED)
-- More flexible, handles missing data
-- Can include random effects (participant, movie)
-- Doesn't assume normal residuals with robust SE
+**Non-parametric:**
+- ✅ **Aligned Rank Transform ANOVA** (if assumptions violated)
+- ✅ **Friedman test + Mann-Whitney** (alternative approach)
 
 ---
 

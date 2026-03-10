@@ -1,0 +1,1718 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+
+\title{\textbf{Visualization Methodology Report:\\BRSM Movie Memory Experiment}}
+\author{Data Analysis Documentation}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Overview}
+
+This document provides a comprehensive methodology for all visualizations generated in the BRSM (Boundary-Related Segmentation of Memory) Movie Memory experiment data analysis. The experiment investigates how event boundaries (Abrupt vs. Natural) and frame types (Beginning Boundary vs. Ending Moment) affect memory encoding and retrieval performance.
+
+\subsection{Dataset Summary}
+\begin{itemize}
+    \item \textbf{Participants:} $N = 146$ (67 in AB condition, 79 in NB condition)
+    \item \textbf{Total Trials:} $N = 6800$ recognition trials
+    \item \textbf{Conditions:} 
+        \begin{itemize}
+            \item AB (Abrupt Boundary): Videos with abrupt event boundaries
+            \item NB (Natural Boundary): Videos with natural event boundaries
+        \end{itemize}
+    \item \textbf{Frame Types:}
+        \begin{itemize}
+            \item BB (Beginning Boundary): First frame after boundary
+            \item EM (Ending Moment): Last frame before boundary
+        \end{itemize}
+\end{itemize}
+
+\subsection{Color Scheme}
+Consistent colors were used across all visualizations for clarity:
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Coral Red (\#FF6B6B)}} -- Abrupt Boundary (AB) condition
+    \item \textcolor{cyan}{\textbf{Turquoise (\#4ECDC4)}} -- Natural Boundary (NB) condition
+    \item \textcolor{violet}{\textbf{Purple (\#9B59B6)}} -- Beginning Boundary (BB) frame type
+    \item \textcolor{orange}{\textbf{Orange (\#F39C12)}} -- Ending Moment (EM) frame type
+    \item \textcolor{gray}{\textbf{Gray (\#95A5A6)}} -- Overall/aggregate data
+\end{itemize}
+
+\newpage
+\section{Distribution Plots}
+
+All distribution plots were generated as separate high-resolution files (400 DPI) to ensure publication-quality clarity. Each distribution includes descriptive statistics overlaid on the plot.
+
+\subsection{Age Distribution (01a)}
+
+\textbf{Visualization Type:} Histogram
+
+\textbf{Purpose:} Assess the demographic characteristics of the participant sample and verify age range appropriateness for the cognitive task.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Participant-level ($N=146$)
+    \item \textbf{Variable:} \texttt{age} (continuous, measured in years)
+    \item \textbf{Binning Strategy:} 20 equal-width bins to capture age distribution granularity
+    \item \textbf{Central Tendency:} Mean age computed as $\bar{x} = \frac{1}{N}\sum_{i=1}^{N} x_i$
+    \item \textbf{Visual Elements:}
+        \begin{itemize}
+            \item Gray histogram bars with black edges for clarity
+            \item Vertical dashed line indicating mean age
+            \item Grid along y-axis for frequency estimation
+        \end{itemize}
+\end{itemize}
+
+\textbf{Statistical Interpretation:} The age distribution allows assessment of sample homogeneity and potential age-related confounds. A concentrated distribution suggests minimal age effects on cognitive performance.
+
+\subsection{Confidence Rating Distribution (01b)}
+
+\textbf{Visualization Type:} Bar Chart (Ordinal)
+
+\textbf{Purpose:} Examine the distribution of subjective confidence ratings across all recognition trials. Note that confidence is treated as ordinal data, not continuous.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Trial-level ($N=6800$)
+    \item \textbf{Variable:} \texttt{conf\_radio.response} (ordinal scale: 1--5)
+        \begin{itemize}
+            \item 1 = Not confident at all
+            \item 5 = Very confident
+        \end{itemize}
+    \item \textbf{Aggregation:} Count frequency for each ordinal value
+    \item \textbf{Representation:} Discrete bars (width = 0.7) rather than continuous histogram
+    \item \textbf{Visual Elements:}
+        \begin{itemize}
+            \item Frequency counts displayed above each bar
+            \item Mean confidence displayed in legend
+            \item Bars use gray color with black edges
+        \end{itemize}
+\end{itemize}
+
+\textbf{Rationale for Bar Chart:} Confidence ratings are discrete ordinal values, not continuous measurements. Using a bar chart (rather than histogram) respects the ordinal nature of the data and prevents misleading interpolation between rating levels.
+
+\textbf{Statistical Interpretation:} The distribution reveals whether participants used the full confidence scale or showed response bias (e.g., ceiling/floor effects). A balanced distribution suggests appropriate task difficulty.
+
+\subsection{Overall Accuracy Distribution (01c)}
+
+\textbf{Visualization Type:} Histogram
+
+\textbf{Purpose:} Assess the distribution of recognition memory accuracy at the participant level.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Participant-level ($N=146$)
+    \item \textbf{Variable:} \texttt{accuracy} (proportion correct)
+    \item \textbf{Calculation:} For participant $i$:
+        \begin{equation}
+            \text{Accuracy}_i = \frac{\sum_{j=1}^{n_i} \mathbb{1}[\text{correct}_j]}{n_i}
+        \end{equation}
+        where $n_i$ = number of trials for participant $i$ (typically 46 trials per participant)
+    \item \textbf{Range:} $[0, 1]$ continuous proportion
+    \item \textbf{Binning:} 25 equal-width bins for fine-grained distribution visualization
+    \item \textbf{Central Tendency:} Mean accuracy overlaid as vertical dashed line
+\end{itemize}
+
+\textbf{Statistical Interpretation:} Accuracy distribution shape (e.g., normal, skewed, bimodal) informs whether memory performance is homogeneous across participants or reveals subgroups. Mean accuracy relative to chance level (0.5 for binary recognition) indicates overall task performance.
+
+\subsection{Accuracy by Condition (01d)}
+
+\textbf{Visualization Type:} Side-by-Side Histogram Comparison
+
+\textbf{Purpose:} Compare accuracy distributions between Abrupt Boundary (AB) and Natural Boundary (NB) conditions without overlapping plots.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Participant-level, stratified by condition
+        \begin{itemize}
+            \item AB: $N=67$ participants
+            \item NB: $N=79$ participants
+        \end{itemize}
+    \item \textbf{Design Choice:} Separate subplots to avoid visual overlap and ambiguity
+    \item \textbf{Binning:} 20 bins per condition for balanced resolution
+    \item \textbf{Color Coding:}
+        \begin{itemize}
+            \item AB: Coral red (\#FF6B6B) -- easier to segment/remember
+            \item NB: Turquoise (\#4ECDC4) -- harder to segment
+        \end{itemize}
+    \item \textbf{Statistical Overlay:}
+        \begin{itemize}
+            \item Mean line for each condition (darker shade of respective color)
+            \item Sample size noted in title: $N_{AB}$ and $N_{NB}$
+        \end{itemize}
+\end{itemize}
+
+\textbf{Hypothesis Tested:} H1: Abrupt boundaries facilitate better memory segmentation, potentially leading to higher accuracy than natural boundaries.
+
+\textbf{Visual Analysis Strategy:}
+\begin{enumerate}
+    \item Compare mean lines between conditions
+    \item Assess distribution spread (variance) in each condition
+    \item Identify potential ceiling/floor effects
+    \item Note any bimodal patterns suggesting subgroups
+\end{enumerate}
+
+\subsection{Overall Response Time Distribution (01e)}
+
+\textbf{Visualization Type:} Histogram
+
+\textbf{Purpose:} Characterize the temporal dynamics of recognition decisions across all trials.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Trial-level ($N=6800$)
+    \item \textbf{Variable:} \texttt{resp.rt} (response time in seconds)
+    \item \textbf{Measurement:} Time from stimulus onset to button press
+    \item \textbf{Binning:} 60 bins for high-resolution temporal distribution
+    \item \textbf{Central Tendency Measures:}
+        \begin{itemize}
+            \item Mean RT: $\bar{t} = \frac{1}{N}\sum_{i=1}^{N} t_i$ (dashed line)
+            \item Median RT: $\tilde{t} = \text{median}(t_1, \ldots, t_N)$ (dotted line)
+        \end{itemize}
+    \item \textbf{Visual Elements:}
+        \begin{itemize}
+            \item Mean shown in red (dashed line)
+            \item Median shown in blue (dotted line)
+            \item Both values displayed in legend
+        \end{itemize}
+\end{itemize}
+
+\textbf{Statistical Interpretation:} 
+\begin{itemize}
+    \item Right-skewed distributions are typical in RT data (few very slow responses)
+    \item Mean > Median indicates positive skew
+    \item Distribution shape informs choice of parametric vs. non-parametric tests
+    \item Outlier inspection for data quality (extremely long RTs may indicate distraction)
+\end{itemize}
+
+\subsection{Response Time by Condition (01f)}
+
+\textbf{Visualization Type:} Side-by-Side Histogram Comparison
+
+\textbf{Purpose:} Compare response time distributions between boundary conditions to test whether boundary type affects decision speed.
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Data Level:} Trial-level, stratified by condition
+        \begin{itemize}
+            \item AB: $N=3240$ trials
+            \item NB: $N=3560$ trials
+        \end{itemize}
+    \item \textbf{Binning Strategy:} 50 bins per condition for detailed temporal resolution
+    \item \textbf{Statistical Overlays:}
+        \begin{itemize}
+            \item Mean RT (dashed line) -- sensitive to outliers
+            \item Median RT (dotted line) -- robust central tendency measure
+        \end{itemize}
+    \item \textbf{Design Rationale:} Separate panels prevent histogram overlap, enabling clear visual comparison of distribution shapes
+\end{itemize}
+
+\textbf{Hypothesis Tested:} H2: Boundary type may affect retrieval difficulty, manifesting as differences in response latency.
+
+\textbf{Interpretation Guidelines:}
+\begin{itemize}
+    \item Faster RT suggests easier retrieval/stronger memory trace
+    \item Greater RT variance suggests heterogeneous trial difficulty
+    \item Skewness comparison reveals outlier patterns by condition
+\end{itemize}
+
+\newpage
+\section{Box Plots by Condition and Frame Type (02)}
+
+\textbf{Visualization Type:} Box-and-Whisker Plots
+
+\textbf{Purpose:} Provide robust statistical summaries comparing central tendency, spread, and outliers across experimental conditions and frame types.
+
+\subsection{Figure Structure}
+
+2×3 grid layout:
+\begin{itemize}
+    \item \textbf{Row 1:} Comparisons by Condition (AB vs. NB)
+    \item \textbf{Row 2:} Comparisons by Frame Type (BB vs. EM)
+    \item \textbf{Columns:} Accuracy, Response Time, Confidence
+\end{itemize}
+
+\subsection{Methodology for Each Subplot}
+
+\subsubsection{Box Plot Statistical Components}
+
+Each box plot displays five-number summary:
+\begin{enumerate}
+    \item \textbf{Minimum:} Lower whisker = $Q_1 - 1.5 \times \text{IQR}$ or minimum value
+    \item \textbf{First Quartile (Q1):} 25th percentile
+    \item \textbf{Median (Q2):} 50th percentile (thick line inside box)
+    \item \textbf{Third Quartile (Q3):} 75th percentile
+    \item \textbf{Maximum:} Upper whisker = $Q_3 + 1.5 \times \text{IQR}$ or maximum value
+    \item \textbf{Outliers:} Individual points beyond whiskers
+\end{enumerate}
+
+where $\text{IQR} = Q_3 - Q_1$ (Interquartile Range)
+
+\subsubsection{Statistical Advantages of Box Plots}
+\begin{itemize}
+    \item \textbf{Robust:} Resistant to outlier influence (unlike mean-based visualizations)
+    \item \textbf{Distributional Information:} Reveals skewness, spread, and outliers simultaneously
+    \item \textbf{Comparison:} Enables direct visual comparison of multiple groups
+    \item \textbf{Non-parametric:} No distributional assumptions required
+\end{itemize}
+
+\subsection{Specific Comparisons}
+
+\subsubsection{Accuracy by Condition (Panel 1,1)}
+\begin{itemize}
+    \item \textbf{Groups:} AB ($n=67$) vs. NB ($n=79$)
+    \item \textbf{Data Aggregation:} Participant-level mean accuracy
+    \item \textbf{Interpretation:}
+        \begin{itemize}
+            \item Higher median in AB suggests better memory for abrupt boundaries
+            \item Narrower IQR indicates more consistent performance
+            \item Overlapping boxes suggest minimal group differences
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Response Time by Condition (Panel 1,2)}
+\begin{itemize}
+    \item \textbf{Groups:} AB trials ($n=3240$) vs. NB trials ($n=3560$)
+    \item \textbf{Data Level:} Trial-level RT measurements
+    \item \textbf{Interpretation:}
+        \begin{itemize}
+            \item Lower median RT suggests faster retrieval
+            \item Upper outliers indicate occasional delayed responses
+            \item Skewed distribution typical for RT data
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Confidence by Condition (Panel 1,3)}
+\begin{itemize}
+    \item \textbf{Scale:} Ordinal 1--5 rating
+    \item \textbf{Data Level:} Trial-level confidence ratings
+    \item \textbf{Interpretation:}
+        \begin{itemize}
+            \item Higher median indicates greater subjective certainty
+            \item Confidence-accuracy relationship examined through comparison with accuracy plots
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Accuracy by Frame Type (Panel 2,1)}
+\begin{itemize}
+    \item \textbf{Groups:} BB trials ($n=3400$) vs. EM trials ($n=3400$)
+    \item \textbf{Hypothesis:} BB vs. EM frames may be differentially memorable
+    \item \textbf{Interpretation:}
+        \begin{itemize}
+            \item Tests whether boundary beginning or ending is more memorable
+            \item Relevant to theories of event segmentation (post-boundary vs. pre-boundary encoding)
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Response Time by Frame Type (Panel 2,2)}
+\begin{itemize}
+    \item \textbf{Hypothesis:} Frame type may affect retrieval difficulty/speed
+    \item \textbf{Interpretation:} Faster RT for one frame type suggests differential encoding strength
+\end{itemize}
+
+\subsubsection{Confidence by Frame Type (Panel 2,3)}
+\begin{itemize}
+    \item \textbf{Hypothesis:} Subjective confidence may differ for BB vs. EM frames
+    \item \textbf{Interpretation:} Confidence-accuracy correlation examined to assess metacognitive accuracy
+\end{itemize}
+
+\newpage
+\section{Violin Plots (03)}
+
+\textbf{Visualization Type:} Violin Plots (Kernel Density Estimation + Box Plot)
+
+\textbf{Purpose:} Combine density distribution visualization with box plot statistics to show both overall shape and central tendency.
+
+\subsection{Statistical Method}
+
+Violin plots use kernel density estimation (KDE):
+\begin{equation}
+\hat{f}(x) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{x - x_i}{h}\right)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $K$ = Gaussian kernel function
+    \item $h$ = bandwidth parameter (smoothing factor)
+    \item $n$ = sample size
+    \item $x_i$ = individual observations
+\end{itemize}
+
+\subsection{Advantages Over Box Plots}
+\begin{itemize}
+    \item Shows full distribution shape (multimodality, skewness)
+    \item Reveals density concentration regions
+    \item Combines continuous density with discrete statistics
+    \item More informative for large sample sizes
+\end{itemize}
+
+\subsection{Figure Structure}
+
+2×3 layout comparing conditions and frame types:
+
+\subsubsection{Row 1: Condition Comparisons (AB vs. NB)}
+\begin{enumerate}
+    \item \textbf{Response Time by Condition}
+        \begin{itemize}
+            \item Inner box shows quartiles and median
+            \item Width indicates probability density at each value
+            \item Color-coded: AB (coral), NB (turquoise)
+        \end{itemize}
+    
+    \item \textbf{Confidence by Condition}
+        \begin{itemize}
+            \item Ordinal data (1--5 scale)
+            \item Discrete peaks at each confidence level
+            \item Reveals modal confidence rating per condition
+        \end{itemize}
+    
+    \item \textbf{Participant Accuracy by Condition}
+        \begin{itemize}
+            \item Aggregated to participant level
+            \item Shows individual difference variability
+            \item Reveals potential ceiling/floor effects
+        \end{itemize}
+\end{enumerate}
+
+\subsubsection{Row 2: Frame Type Comparisons (BB vs. EM)}
+\begin{enumerate}
+    \item \textbf{Response Time by Frame Type}
+        \begin{itemize}
+            \item Tests beginning vs. ending moment retrieval speed
+            \item Color-coded: BB (purple), EM (orange)
+        \end{itemize}
+    
+    \item \textbf{Confidence by Frame Type}
+        \begin{itemize}
+            \item Subjective certainty for different temporal positions
+            \item May reveal differential encoding quality
+        \end{itemize}
+    
+    \item \textbf{Confidence by Response Correctness}
+        \begin{itemize}
+            \item Critical for metacognitive assessment
+            \item Color-coded: Incorrect (red), Correct (green)
+            \item Higher confidence for correct trials indicates good metacognitive calibration
+            \item Overlapping distributions suggest metacognitive impairment
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Statistical Interpretation}
+
+\textbf{Distribution Shape Analysis:}
+\begin{itemize}
+    \item \textbf{Width at height:} Wider sections indicate more data concentration
+    \item \textbf{Multiple peaks:} Suggest mixture distributions or subgroups
+    \item \textbf{Asymmetry:} Reveals skewness direction and magnitude
+    \item \textbf{Box inside:} Provides robust statistics (quartiles, IQR, median)
+\end{itemize}
+
+\subsection{Legend Placement}
+
+Legends positioned horizontally below plots to:
+\begin{itemize}
+    \item Maximize plot area for data visualization
+    \item Improve readability on wide displays
+    \item Maintain consistent color coding throughout document
+\end{itemize}
+
+\newpage
+\section{Interaction Plots: Condition × Frame Type (04)}
+
+\textbf{Visualization Type:} Line Plots with Interaction Effects
+
+\textbf{Purpose:} Test for statistical interactions between experimental factors (Condition × Frame Type) on dependent variables.
+
+\subsection{Statistical Background}
+
+An \textbf{interaction effect} occurs when the effect of one independent variable depends on the level of another independent variable.
+
+\textbf{Formal Definition:} In a 2×2 factorial design:
+\begin{equation}
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $Y_{ijk}$ = dependent variable for observation $k$ in condition $i$ and frame type $j$
+    \item $\mu$ = grand mean
+    \item $\alpha_i$ = main effect of Condition (AB vs. NB)
+    \item $\beta_j$ = main effect of Frame Type (BB vs. EM)
+    \item $(\alpha\beta)_{ij}$ = \textbf{interaction effect}
+    \item $\epsilon_{ijk}$ = residual error
+\end{itemize}
+
+\subsection{Visual Detection of Interactions}
+
+\textbf{Parallel Lines:} No interaction (additive effects)
+\begin{itemize}
+    \item Effect of Condition is constant across Frame Types
+    \item Effect of Frame Type is constant across Conditions
+\end{itemize}
+
+\textbf{Non-Parallel Lines:} Interaction present
+\begin{itemize}
+    \item \textbf{Crossing lines:} Ordinal interaction (effect reverses)
+    \item \textbf{Converging/Diverging:} Disordinal interaction (effect magnitude differs)
+\end{itemize}
+
+\subsection{Three Interaction Plots}
+
+\subsubsection{Accuracy: Condition × Frame Type}
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item \textbf{Aggregation:} Mean accuracy for each condition-frame combination
+        \begin{equation}
+            \bar{Y}_{ij} = \frac{1}{n_{ij}} \sum_{k=1}^{n_{ij}} Y_{ijk}
+        \end{equation}
+    \item \textbf{X-axis:} Frame Type (BB, EM)
+    \item \textbf{Lines:} Separate line for each Condition (AB in coral, NB in turquoise)
+    \item \textbf{Markers:} Large circles at each data point
+\end{itemize}
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item \textbf{Main effect of Condition:} Vertical separation between lines
+    \item \textbf{Main effect of Frame Type:} Slope of lines
+    \item \textbf{Interaction:} Difference in slopes (non-parallelism)
+\end{itemize}
+
+\textbf{Theoretical Prediction:} Abrupt boundaries may enhance memory more for BB (beginning) frames than EM frames if attention is captured immediately post-boundary.
+
+\subsubsection{Response Time: Condition × Frame Type}
+
+\textbf{Methodology:} Same as accuracy plot, but dependent variable is mean RT.
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item \textbf{Interaction hypothesis:} If BB frames are easier for AB but not NB, lines will converge/diverge
+    \item \textbf{Speed-accuracy tradeoff:} Compare with accuracy interaction plot
+    \item \textbf{Processing fluency:} Faster RT suggests easier retrieval
+\end{itemize}
+
+\subsubsection{Confidence: Condition × Frame Type}
+
+\textbf{Methodology:} Mean confidence rating (1--5 scale) for each cell.
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item \textbf{Metacognitive insight:} Confidence should track objective accuracy
+    \item \textbf{Interaction with accuracy:} Compare patterns to accuracy plot
+    \item \textbf{Dissociation:} Different patterns suggest metacognitive bias
+\end{itemize}
+
+\subsection{Statistical Follow-Up}
+
+Interaction plots suggest appropriate statistical tests:
+\begin{itemize}
+    \item \textbf{No interaction:} Two-way ANOVA with main effects
+    \item \textbf{Interaction present:} Simple effects analysis (compare conditions within each frame type separately)
+    \item \textbf{Post-hoc tests:} Bonferroni or Tukey HSD for pairwise comparisons
+\end{itemize}
+
+\newpage
+\section{Independent Pie Charts (05a--05f)}
+
+\textbf{Visualization Type:} Pie Charts (Categorical Frequency Distribution)
+
+\textbf{Purpose:} Display proportional composition of categorical variables in the dataset. Each variable is rendered as a separate high-quality figure to ensure clarity and independence.
+
+\subsection{General Methodology}
+
+\textbf{Statistical Representation:}
+\begin{equation}
+\theta_i = 360° \times \frac{n_i}{\sum_{j=1}^{k} n_j}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\theta_i$ = angle for category $i$
+    \item $n_i$ = frequency of category $i$
+    \item $k$ = number of categories
+\end{itemize}
+
+\textbf{Visual Design Elements:}
+\begin{itemize}
+    \item \textbf{Explode:} Slight separation (0.05 units) for visual clarity
+    \item \textbf{Shadow:} 3D effect for depth perception
+    \item \textbf{Labels:} Category name and sample size ($N$)
+    \item \textbf{Percentages:} Displayed inside wedges (white text, bold, 16pt)
+    \item \textbf{Resolution:} 400 DPI for publication quality
+\end{itemize}
+
+\subsection{Individual Pie Charts}
+
+\subsubsection{Condition Distribution (05a)}
+
+\textbf{Variable:} Experimental condition assignment
+
+\textbf{Categories:}
+\begin{itemize}
+    \item AB (Abrupt Boundary): $N=67$ participants
+    \item NB (Natural Boundary): $N=79$ participants
+\end{itemize}
+
+\textbf{Colors:} Color-matched to condition scheme (coral for AB, turquoise for NB)
+
+\textbf{Purpose:} Verify balanced/unbalanced group assignment and report sample sizes for power calculations.
+
+\textbf{Statistical Note:} Slight imbalance ($N_{NB} > N_{AB}$) should be considered when interpreting group comparisons.
+
+\subsubsection{Frame Type Distribution (05b)}
+
+\textbf{Variable:} Temporal position of test frame
+
+\textbf{Categories:}
+\begin{itemize}
+    \item BB (Beginning Boundary): $N=3400$ trials (50\%)
+    \item EM (Ending Moment): $N=3560$ trials (50\%)
+\end{itemize}
+
+\textbf{Colors:} Purple (BB), Orange (EM)
+
+\textbf{Purpose:} Confirm balanced experimental design with equal representation of both frame types.
+
+\textbf{Extraction Method:} Frame type extracted from filename patterns:
+\begin{itemize}
+    \item \texttt{*\_BB\_T.png} $\rightarrow$ BB
+    \item \texttt{*\_EM\_T.png} $\rightarrow$ EM
+\end{itemize}
+
+\subsubsection{Response Correctness (05c)}
+
+\textbf{Variable:} Recognition accuracy (correct vs. incorrect responses)
+
+\textbf{Categories:}
+\begin{itemize}
+    \item Correct: Accurate recognition decisions
+    \item Incorrect: Recognition errors (false alarms + misses)
+\end{itemize}
+
+\textbf{Colors:} Green (correct), Red (incorrect)
+
+\textbf{Purpose:} Overall task difficulty assessment. High accuracy (e.g., $>70\%$) suggests good memory encoding; near-chance performance (50\%) suggests task is too difficult.
+
+\textbf{Statistical Interpretation:}
+\begin{equation}
+\text{Overall Accuracy} = \frac{N_{\text{correct}}}{N_{\text{correct}} + N_{\text{incorrect}}}
+\end{equation}
+
+\subsubsection{Gender Distribution (05d)}
+
+\textbf{Variable:} Self-reported gender
+
+\textbf{Purpose:} Demographic characterization; test for potential gender-related memory differences if of theoretical interest.
+
+\textbf{Categories:} Typically includes Male, Female, and potentially Non-binary/Other categories.
+
+\textbf{Colors:} Distinct vibrant colors for clear differentiation
+
+\textbf{Statistical Note:} If gender is confounded with condition assignment, this should be reported and potentially statistically controlled.
+
+\subsubsection{Handedness Distribution (05e)}
+
+\textbf{Variable:} Dominant hand (typically Right vs. Left)
+
+\textbf{Categories:}
+\begin{itemize}
+    \item Right-handed (majority, typically $\sim$85--90\%)
+    \item Left-handed
+    \item Ambidextrous (if measured)
+\end{itemize}
+
+\textbf{Colors:} Green (right), Orange (left)
+
+\textbf{Purpose:} Brain lateralization considerations; relevant if experiment involves lateralized stimuli or motor responses.
+
+\subsubsection{Vision Status Distribution (05f)}
+
+\textbf{Variable:} Corrected vs. uncorrected vision
+
+\textbf{Categories:}
+\begin{itemize}
+    \item Normal/Corrected-to-normal vision
+    \item Uncorrected (if participants without glasses/contacts were included)
+\end{itemize}
+
+\textbf{Colors:} Cyan (normal/corrected), Yellow-green (other)
+
+\textbf{Purpose:} Ensure visual stimulus presentation was appropriate for all participants; screen for vision-related confounds.
+
+\subsection{Rationale for Separate Files}
+
+Each pie chart saved as independent high-resolution file (400 DPI) because:
+\begin{enumerate}
+    \item \textbf{Clarity:} Larger individual plots are more readable than cramped grid layouts
+    \item \textbf{Flexibility:} Can be used independently in presentations/manuscripts
+    \item \textbf{Publication Quality:} High DPI suitable for journal submission
+    \item \textbf{Customization:} Each chart can be updated independently without regenerating all
+\end{enumerate}
+
+\newpage
+\section{Scatter Plots: Key Associations (06a--06f)}
+
+\textbf{Visualization Type:} Bivariate Scatter Plots with Regression Lines
+
+\textbf{Purpose:} Examine linear and non-linear relationships between continuous variables; detect outliers and assess correlation strength.
+
+\subsection{General Methodology}
+
+Each scatter plot includes:
+\begin{enumerate}
+    \item \textbf{Data points:} Individual observations (semi-transparent to show density)
+    \item \textbf{Regression line:} Ordinary Least Squares (OLS) fitted line
+    \item \textbf{Correlation coefficient:} Pearson's $r$ displayed
+    \item \textbf{95\% Confidence interval:} Shaded region around regression line
+\end{enumerate}
+
+\textbf{Statistical Model:}
+\begin{equation}
+y = \beta_0 + \beta_1 x + \epsilon
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\beta_0$ = intercept
+    \item $\beta_1$ = slope
+    \item $\epsilon \sim N(0, \sigma^2)$ = residual error
+\end{itemize}
+
+\textbf{Pearson Correlation Coefficient:}
+\begin{equation}
+r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2 \sum_{i=1}^{n}(y_i - \bar{y})^2}}
+\end{equation}
+
+Range: $r \in [-1, 1]$
+\begin{itemize}
+    \item $r = 1$: Perfect positive linear relationship
+    \item $r = 0$: No linear relationship
+    \item $r = -1$: Perfect negative linear relationship
+\end{itemize}
+
+\subsection{Individual Scatter Plots}
+
+\subsubsection{Confidence vs. Response Time (06a)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: \texttt{resp.rt} (response time in seconds)
+    \item Y-axis: \texttt{conf\_radio.response} (confidence rating 1--5)
+\end{itemize}
+
+\textbf{Data Level:} Trial-level ($N=6800$)
+
+\textbf{Hypothesis:} 
+\begin{itemize}
+    \item \textbf{Negative correlation expected:} Faster responses typically indicate stronger memory traces $\rightarrow$ higher confidence
+    \item \textbf{Fluency hypothesis:} Processing ease correlates with subjective confidence
+\end{itemize}
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Strong negative $r$: Confidence-RT relationship supports metacognitive accuracy
+    \item Weak/no correlation: Dissociation between confidence and retrieval speed
+    \item Outliers: Very slow high-confidence trials may indicate deliberative processing
+\end{itemize}
+
+\subsubsection{Confidence vs. Accuracy (06b)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: Trial-level confidence rating (1--5)
+    \item Y-axis: Trial-level correctness (0 = incorrect, 1 = correct)
+\end{itemize}
+
+\textbf{Data Level:} Trial-level ($N=6800$)
+
+\textbf{Alternative Visualization:} Since Y is binary, this may also be represented as mean accuracy per confidence level (bar chart with error bars).
+
+\textbf{Hypothesis:} \textbf{Calibration hypothesis} -- Confidence should positively correlate with accuracy (good metacognitive monitoring).
+
+\textbf{Metacognitive Assessment:}
+\begin{itemize}
+    \item \textbf{Perfect calibration:} High confidence $\rightarrow$ always correct; low confidence $\rightarrow$ always incorrect
+    \item \textbf{Overconfidence:} High confidence even for incorrect trials
+    \item \textbf{Underconfidence:} Low confidence even for correct trials
+\end{itemize}
+
+\textbf{Statistical Analysis:} Point-biserial correlation (Pearson's $r$ with dichotomous variable).
+
+\subsubsection{Age vs. Accuracy (06c)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: Participant age (years)
+    \item Y-axis: Participant-level accuracy (proportion correct)
+\end{itemize}
+
+\textbf{Data Level:} Participant-level ($N=146$)
+
+\textbf{Hypothesis:} 
+\begin{itemize}
+    \item \textbf{Cognitive aging hypothesis:} Negative correlation if memory decline with age
+    \item \textbf{Null hypothesis:} No age effect if sample is homogeneous (e.g., young adults only)
+\end{itemize}
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Significant negative $r$: Age-related memory decline evident
+    \item No correlation: Sample age range insufficient to detect aging effects, or task not age-sensitive
+\end{itemize}
+
+\subsubsection{Age vs. Response Time (06d)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: Participant age (years)
+    \item Y-axis: Mean RT per participant (seconds)
+\end{itemize}
+
+\textbf{Data Level:} Participant-level mean RT ($N=146$)
+
+\textbf{Hypothesis:} \textbf{Processing speed hypothesis} -- Older adults may show slower RTs due to cognitive slowing.
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Positive correlation: Age-related slowing
+    \item Combined with accuracy: Distinguishes speed-accuracy tradeoff from general decline
+\end{itemize}
+
+\subsubsection{Accuracy vs. Confidence (06e)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: Participant-level mean accuracy
+    \item Y-axis: Participant-level mean confidence
+\end{itemize}
+
+\textbf{Data Level:} Participant-level aggregates ($N=146$)
+
+\textbf{Purpose:} Individual difference analysis -- do high-performing participants show higher confidence?
+
+\textbf{Hypothesis:} Positive correlation indicates metacognitive insight (participants "know what they know").
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Strong positive $r$: Good metacognitive calibration at individual level
+    \item Weak correlation: Confidence ratings not diagnostic of actual performance
+\end{itemize}
+
+\subsubsection{Response Time vs. Confidence (06f)}
+
+\textbf{Variables:}
+\begin{itemize}
+    \item X-axis: Participant-level mean RT
+    \item Y-axis: Participant-level mean confidence
+\end{itemize}
+
+\textbf{Data Level:} Participant-level aggregates ($N=146$)
+
+\textbf{Hypothesis:} Individuals with faster overall RT may show higher overall confidence (fluency-confidence link).
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Negative correlation: Faster responders are more confident
+    \item No correlation: RT and confidence tap independent processes
+\end{itemize}
+
+\subsection{Visual Design Choices}
+
+\textbf{Transparency (alpha):} Semi-transparent points (alpha = 0.3--0.5) reveal overlapping data density.
+
+\textbf{Regression Line:} Provides visual slope estimation even without numerical correlation value.
+
+\textbf{Confidence Interval Shading:} 95\% CI shows uncertainty in slope estimate; narrower band indicates more precise relationship.
+
+\textbf{Grid Lines:} Light grid for easier value estimation from plot.
+
+\newpage
+\section{Correlation Heatmaps (07)}
+
+\textbf{Visualization Type:} Correlation Matrix Heatmap
+
+\textbf{Purpose:} Simultaneously visualize pairwise correlations among multiple continuous variables; identify multicollinearity and relationships.
+
+\subsection{Statistical Method}
+
+\textbf{Correlation Matrix:} Symmetric matrix of Pearson correlation coefficients:
+\begin{equation}
+\mathbf{R} = \begin{bmatrix}
+1 & r_{12} & r_{13} & \cdots & r_{1p} \\
+r_{21} & 1 & r_{23} & \cdots & r_{2p} \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+r_{p1} & r_{p2} & r_{p3} & \cdots & 1
+\end{bmatrix}
+\end{equation}
+
+where $r_{ij}$ is the Pearson correlation between variables $i$ and $j$.
+
+\subsection{Variables Included}
+
+Likely includes:
+\begin{enumerate}
+    \item Age
+    \item Accuracy (participant-level)
+    \item Mean Response Time (participant-level)
+    \item Mean Confidence (participant-level)
+    \item Mean Confidence RT (participant-level)
+\end{enumerate}
+
+\subsection{Two Heatmap Variants}
+
+\subsubsection{Trial-Level Correlations}
+
+Correlations computed at the trial level ($N=6800$):
+\begin{itemize}
+    \item Response Time
+    \item Confidence Rating
+    \item Correctness (0/1)
+    \item Confidence RT
+    \item Is\_repeat (vigilance trial indicator)
+\end{itemize}
+
+\textbf{Caveat:} Trial-level correlations can be inflated by within-subject dependencies (non-independence of observations from same participant).
+
+\subsubsection{Participant-Level Correlations}
+
+Correlations computed at participant level ($N=146$):
+\begin{itemize}
+    \item Age
+    \item Mean Accuracy
+    \item Mean RT
+    \item Mean Confidence
+    \item Mean Confidence RT
+\end{itemize}
+
+\textbf{Advantage:} Each data point is independent (one per participant), meeting correlation assumptions.
+
+\subsection{Color Encoding}
+
+Diverging color scheme (red-white-blue):
+\begin{itemize}
+    \item \textbf{Red:} Strong negative correlation ($r \approx -1$)
+    \item \textbf{White:} No correlation ($r \approx 0$)
+    \item \textbf{Blue:} Strong positive correlation ($r \approx 1$)
+\end{itemize}
+
+\textbf{Color intensity} represents correlation strength.
+
+\subsection{Annotations}
+
+Each cell displays numerical correlation value for precise interpretation:
+\begin{itemize}
+    \item Font size proportional to available space
+    \item Sign ($\pm$) clearly indicated
+    \item Diagonal (self-correlation) always 1.00
+\end{itemize}
+
+\subsection{Interpretation}
+
+\textbf{Strong correlations ($|r| > 0.5$):}
+\begin{itemize}
+    \item May indicate redundancy (multicollinearity)
+    \item Relevant for building predictive models
+    \item Suggest shared underlying constructs
+\end{itemize}
+
+\textbf{Weak correlations ($|r| < 0.3$):}
+\begin{itemize}
+    \item Variables measure independent aspects
+    \item Low risk of multicollinearity
+\end{itemize}
+
+\textbf{Unexpected correlations:}
+\begin{itemize}
+    \item May reveal confounds or data quality issues
+    \item Guide follow-up analyses
+\end{itemize}
+
+\newpage
+\section{Q-Q Plots for Normality Assessment (08)}
+
+\textbf{Visualization Type:} Quantile-Quantile (Q-Q) Plots
+
+\textbf{Purpose:} Assess whether data follow a normal (Gaussian) distribution; diagnose deviations (skewness, kurtosis, outliers).
+
+\subsection{Statistical Theory}
+
+A Q-Q plot compares empirical quantiles against theoretical quantiles from a reference distribution (typically standard normal $N(0,1)$).
+
+\textbf{Procedure:}
+\begin{enumerate}
+    \item Order observations: $x_{(1)} \leq x_{(2)} \leq \cdots \leq x_{(n)}$
+    \item Compute empirical quantiles: $q_i = x_{(i)}$
+    \item Compute theoretical quantiles from $N(0,1)$: $z_i = \Phi^{-1}\left(\frac{i - 0.5}{n}\right)$
+    \item Plot points: $(z_i, q_i)$ for $i = 1, \ldots, n$
+\end{enumerate}
+
+where $\Phi^{-1}$ is the inverse cumulative distribution function (quantile function) of standard normal distribution.
+
+\subsection{Interpretation}
+
+\textbf{Data are approximately normal:} Points fall on diagonal reference line.
+
+\textbf{Deviations from normality:}
+\begin{itemize}
+    \item \textbf{Right skew:} Upper tail deviates upward from line
+    \item \textbf{Left skew:} Lower tail deviates downward from line
+    \item \textbf{Heavy tails (leptokurtosis):} S-shaped curve, tails deviate beyond line
+    \item \textbf{Light tails (platykurtosis):} Inverted S-shape, tails stay within line
+    \item \textbf{Outliers:} Isolated points far from line at extremes
+\end{itemize}
+
+\subsection{Variables Tested}
+
+Six separate Q-Q plots for:
+\begin{enumerate}
+    \item \textbf{Age} (participant-level, $N=146$)
+    \item \textbf{Response Time} (trial-level, $N=6800$)
+    \item \textbf{Confidence Rating} (trial-level, $N=6800$)
+        \begin{itemize}
+            \item Note: Ordinal variable, normality not expected
+        \end{itemize}
+    \item \textbf{Participant Accuracy} (participant-level, $N=146$)
+    \item \textbf{Mean RT per participant} (participant-level, $N=146$)
+    \item \textbf{Mean Confidence per participant} (participant-level, $N=146$)
+\end{enumerate}
+
+\subsection{Statistical Testing}
+
+Formal normality tests accompany Q-Q plots:
+
+\subsubsection{Shapiro-Wilk Test}
+
+\textbf{Test Statistic:}
+\begin{equation}
+W = \frac{\left(\sum_{i=1}^{n} a_i x_{(i)}\right)^2}{\sum_{i=1}^{n} (x_i - \bar{x})^2}
+\end{equation}
+
+where $a_i$ are weights calculated from expected order statistics of $N(0,1)$.
+
+\begin{itemize}
+    \item $H_0$: Data are normally distributed
+    \item $H_1$: Data are not normally distributed
+    \item Reject $H_0$ if $p < 0.05$
+\end{itemize}
+
+\textbf{Range:} $W \in [0, 1]$, values close to 1 indicate normality.
+
+\subsubsection{Kolmogorov-Smirnov Test}
+
+\textbf{Test Statistic:}
+\begin{equation}
+D = \max_{x} |F_n(x) - F(x)|
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $F_n(x)$ = empirical cumulative distribution function
+    \item $F(x)$ = theoretical CDF (normal distribution)
+\end{itemize}
+
+Measures maximum vertical distance between empirical and theoretical CDFs.
+
+\subsubsection{D'Agostino-Pearson Test}
+
+Combines skewness and kurtosis tests:
+\begin{itemize}
+    \item \textbf{Skewness test:} $Z_1 = \frac{\sqrt{b_1}}{SE(\sqrt{b_1})}$
+    \item \textbf{Kurtosis test:} $Z_2 = \frac{b_2 - 3}{SE(b_2)}$
+    \item \textbf{Combined:} $K^2 = Z_1^2 + Z_2^2$ (chi-square distributed with 2 df under $H_0$)
+\end{itemize}
+
+\subsection{Practical Implications}
+
+\textbf{If data are normal:}
+\begin{itemize}
+    \item Parametric tests justified (t-tests, ANOVA, linear regression)
+    \item Mean and SD are appropriate summary statistics
+\end{itemize}
+
+\textbf{If data are non-normal:}
+\begin{itemize}
+    \item Consider non-parametric tests (Mann-Whitney U, Kruskal-Wallis, etc.)
+    \item Report median and IQR instead of mean and SD
+    \item Consider data transformation (log, square root) if appropriate
+    \item Large sample sizes (CLT): parametric tests may still be robust
+\end{itemize}
+
+\newpage
+\section{Confidence RT Analysis (09)}
+
+\textbf{Visualization Type:} Multi-panel figure showing confidence rating response times
+
+\textbf{Purpose:} Analyze the temporal dynamics of confidence judgments (distinct from recognition response times).
+
+\subsection{Background}
+
+\textbf{Confidence RT} = Time from recognition stimulus offset to confidence rating submission.
+
+This measures metacognitive decision-making speed, distinct from memory retrieval speed (response RT).
+
+\subsection{Figure Panels}
+
+\subsubsection{Panel 1: Confidence RT Distribution (Overall)}
+
+\textbf{Visualization:} Histogram
+
+\textbf{Data:} All confidence RT values ($N=6800$ trials)
+
+\textbf{Methodology:}
+\begin{itemize}
+    \item Binning: 50 bins for detailed distribution
+    \item Overlay: Mean and median confidence RT
+    \item Color: Gray (overall data)
+\end{itemize}
+
+\textbf{Expected Pattern:} Right-skewed distribution (most confidence judgments are fast, but occasional deliberative slow judgments).
+
+\subsubsection{Panel 2: Confidence RT by Condition}
+
+\textbf{Visualization:} Box plots or violin plots
+
+\textbf{Comparison:} AB vs. NB
+
+\textbf{Hypothesis:} Boundary type may affect metacognitive decision difficulty.
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item Faster confidence RT: Easier metacognitive monitoring
+    \item Slower confidence RT: More deliberative/uncertain metacognition
+\end{itemize}
+
+\subsubsection{Panel 3: Confidence RT by Frame Type}
+
+\textbf{Comparison:} BB vs. EM
+
+\textbf{Hypothesis:} Frame position may affect confidence judgment speed.
+
+\subsubsection{Panel 4: Confidence RT vs. Response RT}
+
+\textbf{Visualization:} Scatter plot
+
+\textbf{Purpose:} Test correlation between retrieval speed and confidence judgment speed.
+
+\textbf{Hypothesis:}
+\begin{itemize}
+    \item \textbf{Positive correlation:} Fast retrieval $\rightarrow$ fast confidence (fluency-based metacognition)
+    \item \textbf{No correlation:} Independent processes
+\end{itemize}
+
+\subsubsection{Panel 5: Confidence RT by Response Correctness}
+
+\textbf{Comparison:} Correct vs. Incorrect trials
+
+\textbf{Hypothesis:} Error detection may slow confidence judgments (increased monitoring for incorrect trials).
+
+\textbf{Expected Pattern:}
+\begin{itemize}
+    \item Faster confidence RT for correct trials (high certainty)
+    \item Slower confidence RT for incorrect trials (uncertainty/conflict detection)
+\end{itemize}
+
+\subsection{Theoretical Implications}
+
+\textbf{Fluency Theory:} Confidence based on retrieval ease (positive RT correlation).
+
+\textbf{Monitoring Theory:} Confidence involves additional evaluative process (independent from retrieval RT).
+
+\textbf{Automatic vs. Deliberative Metacognition:} Fast confidence RT suggests automatic monitoring; slow RT suggests deliberative evaluation.
+
+\newpage
+\section{Repeat/Vigilance Trial Effects (10)}
+
+\textbf{Visualization Type:} Multi-panel comparison figure
+
+\textbf{Purpose:} Analyze performance on vigilance trials (repeated videos) to assess encoding attention quality.
+
+\subsection{Background: Vigilance Check}
+
+\textbf{Experimental Design:} Five videos per condition shown twice during encoding:
+\begin{itemize}
+    \item Video IDs: 3, 7, 18, 28, 37
+    \item Total repeat trials: $850/6800 = 12.5\%$
+\end{itemize}
+
+\textbf{Vigilance Formula:} Participants who correctly identify repeated videos demonstrate attentive encoding.
+
+\textbf{Expected Behavior:}
+\begin{itemize}
+    \item \textbf{Attentive participants:} Correctly identify repeats or correctly do not respond
+    \item \textbf{Inattentive participants:} May show random responding or miss repeats
+\end{itemize}
+
+\subsection{Figure Panels}
+
+\subsubsection{Panel 1: Accuracy for Repeat vs. Non-Repeat Trials}
+
+\textbf{Visualization:} Box plots
+
+\textbf{Comparison:} \texttt{is\_repeat} = 0 vs. 1
+
+\textbf{Hypothesis:}
+\begin{itemize}
+    \item \textbf{Repeat advantage:} Higher accuracy for repeated videos (second presentation)
+    \item \textbf{Practice effect:} Familiarity improves recognition
+\end{itemize}
+
+\textbf{Null hypothesis:} No difference if repetition doesn't affect encoding quality.
+
+\subsubsection{Panel 2: Response Time for Repeat vs. Non-Repeat}
+
+\textbf{Hypothesis:} Repeated videos may be recognized faster (fluency effect).
+
+\textbf{Expected Pattern:} Faster RT for repeat trials if repetition strengthens memory trace.
+
+\subsubsection{Panel 3: Confidence for Repeat vs. Non-Repeat}
+
+\textbf{Metacognitive Prediction:} Participants should feel more confident for repeated stimuli (increased familiarity).
+
+\subsubsection{Panel 4: Interaction Plot (Condition × Repeat Status)}
+
+\textbf{Visualization:} Line plot
+
+\textbf{Purpose:} Test whether repeat advantage differs by boundary type (AB vs. NB).
+
+\textbf{Hypothesis:} Abrupt boundaries may show larger repeat benefit if segmentation enhances encoding.
+
+\subsubsection{Panel 5: Trial Type Distribution Pie Chart}
+
+\textbf{Visualization:} Pie chart showing proportion of repeat vs. non-repeat trials.
+
+\textbf{Purpose:} Report vigilance trial frequency for transparency.
+
+\subsubsection{Panel 6: Repeated Movie IDs Bar Chart}
+
+\textbf{Visualization:} Bar chart showing frequency of each repeated video ID.
+
+\textbf{Purpose:} Verify balanced repetition across videos; identify any video-specific effects.
+
+\subsection{Vigilance Performance Criteria}
+
+\textbf{Pass Criteria:} Participant correctly responded to vigilance prompts OR correctly did not respond when no vigilance trial present.
+
+\textbf{Results:}
+\begin{itemize}
+    \item Total participants with vigilance data: $N=161$
+    \item Passed vigilance check: $N=159$ (98.8\%)
+    \item Failed vigilance check: $N=2$ (1.2\%)
+\end{itemize}
+
+\textbf{Exclusion Consideration:} Participants failing vigilance check may be excluded from main analyses if encoding attention is questionable.
+
+\newpage
+\section{Vigilance Performance Analysis (11)}
+
+\textbf{Visualization Type:} Multi-panel vigilance assessment figure
+
+\textbf{Purpose:} Characterize vigilance task performance and its relationship to recognition memory accuracy.
+
+\subsection{Figure Panels}
+
+\subsubsection{Panel 1: Vigilance Pass/Fail Pie Chart}
+
+\textbf{Visualization:} Pie chart
+
+\textbf{Categories:}
+\begin{itemize}
+    \item Passed: $N=159$ (98.8\%)
+    \item Failed: $N=2$ (1.2\%)
+\end{itemize}
+
+\textbf{Colors:} Green (pass), Red (fail)
+
+\textbf{Interpretation:} High pass rate suggests:
+\begin{itemize}
+    \item Participants were generally attentive during encoding
+    \item Task instructions were clear
+    \item Vigilance check was appropriately calibrated (not too easy/hard)
+\end{itemize}
+
+\subsubsection{Panel 2: Vigilance Performance by Condition}
+
+\textbf{Visualization:} Grouped bar chart or stacked bar chart
+
+\textbf{Comparison:} AB vs. NB pass rates
+
+\textbf{Purpose:} Test whether boundary type affects encoding attention/vigilance.
+
+\textbf{Statistical Test:} Chi-square test of independence:
+\begin{equation}
+\chi^2 = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $O_{ij}$ = observed frequency in cell $(i,j)$
+    \item $E_{ij}$ = expected frequency under independence
+\end{itemize}
+
+\subsubsection{Panel 3: Accuracy by Vigilance Status}
+
+\textbf{Visualization:} Box plots or violin plots
+
+\textbf{Comparison:} Mean accuracy for participants who passed vs. failed vigilance
+
+\textbf{Hypothesis:} \textbf{Vigilance-memory link} -- Participants who passed vigilance check should show higher recognition accuracy (better encoding attention).
+
+\textbf{Expected Pattern:} Higher accuracy for vigilance-pass group.
+
+\textbf{Statistical Test:} Independent samples t-test (if normality holds) or Mann-Whitney U test.
+
+\subsection{Vigilance Data Extraction Method}
+
+\textbf{Source:} Raw CSV files from encoding phase
+
+\textbf{Columns Extracted:}
+\begin{itemize}
+    \item \texttt{vigilance\_pressed}: Binary indicator (0 = no press, 1 = pressed)
+    \item \texttt{vigilance\_correct}: Binary indicator (0 = incorrect, 1 = correct)
+\end{itemize}
+
+\textbf{Processing:}
+\begin{itemize}
+    \item Vigilance data found in video phase rows (separate from recognition phase)
+    \item Recognition phase rows have \texttt{movie\_id} $\neq$ NaN
+    \item Video phase rows have \texttt{movie\_id} = NaN but contain vigilance columns
+\end{itemize}
+
+\textbf{Scoring:} 
+\begin{verbatim}
+Pass = (vigilance_correct == 1) OR (vigilance_pressed == 0 AND no vigilance trial)
+\end{verbatim}
+
+\subsection{Theoretical Importance}
+
+\textbf{Attention Check:} Vigilance performance validates that participants were actively watching videos (not zoning out or multitasking).
+
+\textbf{Data Quality:} Low pass rate would suggest data quality issues.
+
+\textbf{Individual Differences:} Vigilance performance as covariate in memory analyses (control for encoding attention).
+
+\textbf{Exclusion Criteria:} Failed vigilance may justify participant exclusion if encoding attention is core to research question.
+
+\newpage
+\section{Normality Tests (Supplementary Table)}
+
+\textbf{Output Type:} CSV file with normality test results
+
+\textbf{File:} \texttt{normality\_test\_results.csv}
+
+\textbf{Purpose:} Provide formal statistical tests for normality assessment (complementing Q-Q plots).
+
+\subsection{Tests Performed}
+
+For each continuous variable, three tests computed:
+
+\subsubsection{Shapiro-Wilk Test}
+\begin{itemize}
+    \item \textbf{Statistic:} $W \in [0,1]$
+    \item \textbf{Interpretation:} Values closer to 1 indicate normality
+    \item \textbf{p-value:} Probability of observing data under normality assumption
+    \item \textbf{Decision:} Reject normality if $p < 0.05$
+\end{itemize}
+
+\textbf{Limitation:} Very sensitive for large sample sizes ($N > 1000$); may reject normality for minor deviations.
+
+\subsubsection{Kolmogorov-Smirnov Test}
+\begin{itemize}
+    \item \textbf{Statistic:} $D$ = maximum distance between empirical and theoretical CDFs
+    \item \textbf{Interpretation:} Smaller $D$ indicates better fit to normal distribution
+    \item \textbf{p-value:} Tests whether observed $D$ is unusually large under normality
+\end{itemize}
+
+\textbf{Advantage:} Distribution-free test (non-parametric).
+
+\textbf{Limitation:} Less powerful than Shapiro-Wilk, especially for small samples.
+
+\subsubsection{D'Agostino-Pearson Test}
+\begin{itemize}
+    \item \textbf{Statistic:} $K^2$ based on skewness and kurtosis
+    \item \textbf{Interpretation:} Tests whether skewness and kurtosis match normal distribution
+    \item \textbf{p-value:} Combined test of skewness and kurtosis departure from normality
+\end{itemize}
+
+\textbf{Advantage:} Explicitly tests specific aspects of non-normality (skewness, kurtosis).
+
+\subsection{Variables Tested}
+
+\begin{enumerate}
+    \item Age ($N=146$)
+    \item Response Time ($N=6800$)
+    \item Confidence Rating ($N=6800$) -- Note: Ordinal, not expected to be normal
+    \item Participant Accuracy ($N=146$)
+    \item Participant Mean RT ($N=146$)
+    \item Participant Mean Confidence ($N=146$)
+\end{enumerate}
+
+\subsection{Output Table Format}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Variable} & \textbf{N} & \textbf{Shapiro W} & \textbf{Shapiro p} & \textbf{KS D} & \textbf{KS p} & \textbf{Normal?} \\
+\midrule
+Age & 146 & 0.906 & $<0.001$ & 0.216 & $<0.001$ & No \\
+Response Time & 6800 & --- & --- & 0.154 & $<0.001$ & No \\
+Confidence & 6800 & --- & --- & 0.317 & $<0.001$ & No \\
+Accuracy & 146 & 0.943 & $<0.001$ & 0.122 & 0.024 & No \\
+Mean RT & 146 & 0.871 & $<0.001$ & 0.155 & 0.002 & No \\
+Mean Confidence & 146 & 0.979 & 0.025 & 0.086 & 0.223 & Borderline \\
+\bottomrule
+\end{tabular}
+\caption{Example normality test results (illustrative values)}
+\end{table}
+
+\subsection{Practical Recommendations}
+
+\textbf{If normality rejected:}
+\begin{enumerate}
+    \item \textbf{Large samples ($N > 30$):} Central Limit Theorem suggests parametric tests may still be robust
+    \item \textbf{Transformation:} Consider log, square root, or Box-Cox transformation
+    \item \textbf{Non-parametric tests:} Use rank-based alternatives (Mann-Whitney, Kruskal-Wallis)
+    \item \textbf{Robust statistics:} Report median/IQR instead of mean/SD
+    \item \textbf{Bootstrap methods:} Use resampling for confidence intervals and inference
+\end{enumerate}
+
+\textbf{Response Time:} Typically non-normal (right-skewed); log transformation often improves normality.
+
+\textbf{Accuracy (proportions):} May show ceiling effects; arcsine transformation sometimes used.
+
+\textbf{Confidence (ordinal):} Non-parametric tests mandatory; do not assume interval scale.
+
+\newpage
+\section{General Statistical Considerations}
+
+\subsection{Multiple Comparisons Correction}
+
+When conducting multiple statistical tests, family-wise error rate (FWER) increases:
+\begin{equation}
+P(\text{at least one false positive}) = 1 - (1 - \alpha)^m
+\end{equation}
+
+where $m$ = number of comparisons.
+
+\textbf{Corrections Applied:}
+\begin{itemize}
+    \item \textbf{Bonferroni:} $\alpha_{\text{adj}} = \frac{\alpha}{m}$ (conservative)
+    \item \textbf{Holm-Bonferroni:} Step-down procedure (less conservative)
+    \item \textbf{False Discovery Rate (FDR):} Benjamini-Hochberg procedure (controls expected false discovery proportion)
+\end{itemize}
+
+\subsection{Effect Size Reporting}
+
+Statistical significance ($p$-value) does not indicate practical importance. Effect sizes should be reported:
+
+\textbf{For t-tests:}
+\begin{equation}
+\text{Cohen's } d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}
+\end{equation}
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item $|d| < 0.2$: Small effect
+    \item $0.2 \leq |d| < 0.5$: Small-to-medium effect
+    \item $0.5 \leq |d| < 0.8$: Medium effect
+    \item $|d| \geq 0.8$: Large effect
+\end{itemize}
+
+\textbf{For ANOVA:}
+\begin{equation}
+\eta^2 = \frac{SS_{\text{effect}}}{SS_{\text{total}}}
+\end{equation}
+
+\textbf{For correlations:}
+\begin{itemize}
+    \item Pearson's $r$ itself is an effect size
+    \item $r^2$ = proportion of variance explained
+\end{itemize}
+
+\subsection{Statistical Power and Sample Size}
+
+\textbf{Power:} Probability of detecting a true effect if it exists.
+\begin{equation}
+\text{Power} = 1 - \beta
+\end{equation}
+
+where $\beta$ = Type II error rate (false negative probability).
+
+\textbf{Convention:} Aim for Power $\geq 0.80$ (80\% chance of detecting true effect).
+
+\textbf{Sample Size Determination:} Based on:
+\begin{itemize}
+    \item Expected effect size (from pilot data or literature)
+    \item Desired power level ($\beta$)
+    \item Significance level ($\alpha$)
+    \item Statistical test used
+\end{itemize}
+
+\textbf{Current Study:}
+\begin{itemize}
+    \item Participant-level: $N=146$ (adequate for medium-to-large effects)
+    \item Trial-level: $N=6800$ (high power even for small effects)
+\end{itemize}
+
+\subsection{Assumptions Checking}
+
+\textbf{For parametric tests:}
+\begin{enumerate}
+    \item \textbf{Normality:} Q-Q plots, Shapiro-Wilk test
+    \item \textbf{Homogeneity of variance:} Levene's test, Bartlett's test
+    \item \textbf{Independence:} Experimental design; check for repeated measures
+    \item \textbf{Linearity (regression):} Residual plots
+\end{enumerate}
+
+\textbf{Violations:}
+\begin{itemize}
+    \item \textbf{Normality violated:} Non-parametric tests or transformations
+    \item \textbf{Homogeneity violated:} Welch's t-test, robust ANOVA
+    \item \textbf{Independence violated:} Mixed-effects models with participant random effects
+\end{itemize}
+
+\newpage
+\section{Recommended Statistical Analyses}
+
+Based on visualizations generated, recommended inferential statistics:
+
+\subsection{Primary Analyses}
+
+\subsubsection{Main Effect of Condition (AB vs. NB)}
+
+\textbf{Accuracy:}
+\begin{itemize}
+    \item \textbf{Test:} Independent samples t-test (or Mann-Whitney U if non-normal)
+    \item \textbf{Hypothesis:} $H_1: \mu_{AB} \neq \mu_{NB}$
+    \item \textbf{Effect size:} Cohen's $d$
+\end{itemize}
+
+\textbf{Response Time:}
+\begin{itemize}
+    \item \textbf{Test:} Independent samples t-test (consider log transformation)
+    \item \textbf{Alternative:} Linear mixed-effects model with participant random intercept
+\end{itemize}
+
+\textbf{Confidence:}
+\begin{itemize}
+    \item \textbf{Test:} Mann-Whitney U test (ordinal data)
+    \item \textbf{Alternative:} Ordinal logistic regression
+\end{itemize}
+
+\subsubsection{Main Effect of Frame Type (BB vs. EM)}
+
+Same tests as above, stratified by frame type instead of condition.
+
+\subsubsection{Interaction: Condition × Frame Type}
+
+\textbf{Test:} Two-way ANOVA (or non-parametric equivalent)
+
+\textbf{Model:}
+\begin{equation}
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}
+\end{equation}
+
+\textbf{Follow-up:} If interaction significant, conduct simple effects analysis.
+
+\subsection{Secondary Analyses}
+
+\subsubsection{Correlational Analyses}
+
+\textbf{Confidence-Accuracy Calibration:}
+\begin{itemize}
+    \item Point-biserial correlation (trial-level)
+    \item Calibration curve: Plot accuracy by confidence level
+    \item Brier score or c-index for metacognitive sensitivity
+\end{itemize}
+
+\textbf{Age Effects:}
+\begin{itemize}
+    \item Pearson correlation (age vs. accuracy)
+    \item Partial correlation controlling for RT
+\end{itemize}
+
+\subsubsection{Vigilance Effects}
+
+\textbf{Repeat vs. Non-Repeat Trials:}
+\begin{itemize}
+    \item Paired t-test (if comparing within-subjects)
+    \item Mixed-effects model with trial type as fixed effect
+\end{itemize}
+
+\textbf{Vigilance Pass vs. Fail:}
+\begin{itemize}
+    \item Independent t-test on accuracy
+    \item Chi-square test for pass/fail by condition
+\end{itemize}
+
+\subsection{Advanced Modeling}
+
+\subsubsection{Linear Mixed-Effects Model (LMEM)}
+
+Accounts for repeated measures (multiple trials per participant):
+
+\textbf{Model:}
+\begin{equation}
+Y_{ij} = (\beta_0 + b_{0i}) + \beta_1 \text{Condition}_i + \beta_2 \text{FrameType}_{ij} + \beta_3 (\text{Condition} \times \text{FrameType})_{ij} + \epsilon_{ij}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $b_{0i} \sim N(0, \sigma^2_b)$ = participant random intercept
+    \item $\epsilon_{ij} \sim N(0, \sigma^2)$ = residual error
+\end{itemize}
+
+\textbf{Advantages:}
+\begin{itemize}
+    \item Correctly handles within-subject dependencies
+    \item More powerful than averaging by participant
+    \item Allows participant-level and trial-level predictors simultaneously
+\end{itemize}
+
+\subsubsection{Logistic Mixed-Effects Model}
+
+For binary accuracy outcome:
+\begin{equation}
+\log\left(\frac{P(\text{Correct}_{ij})}{1 - P(\text{Correct}_{ij})}\right) = \beta_0 + b_{0i} + \beta_1 X_{ij}
+\end{equation}
+
+\textbf{Advantage:} Respects binary nature of accuracy (no 0/1 range violations).
+
+\newpage
+\section{Visualization Software and Reproducibility}
+
+\subsection{Software Stack}
+
+\begin{itemize}
+    \item \textbf{Language:} Python 3.9+
+    \item \textbf{Data Processing:} pandas, numpy
+    \item \textbf{Visualization:} matplotlib, seaborn
+    \item \textbf{Statistical Testing:} scipy.stats, statsmodels
+    \item \textbf{Normality Tests:} scipy.stats (shapiro, kstest, normaltest)
+\end{itemize}
+
+\subsection{Reproducibility}
+
+\textbf{Random Seed:} None required (visualizations are deterministic).
+
+\textbf{Figure Resolution:} 400 DPI for all visualizations (publication-quality).
+
+\textbf{Color Consistency:} Hex color codes hard-coded for consistency across figures.
+
+\textbf{Data Files:}
+\begin{itemize}
+    \item \texttt{trials\_final\_clean\_with\_repeat.csv}: Trial-level data with is\_repeat column
+    \item \texttt{participants\_final\_clean\_with\_vigilance.csv}: Participant-level data with vigilance metrics
+\end{itemize}
+
+\subsection{Script Structure}
+
+\textbf{File:} \texttt{data\_visualizations\_improved.py}
+
+\textbf{Sections:}
+\begin{enumerate}
+    \item Data loading and preprocessing
+    \item Frame type extraction (from filenames)
+    \item Distribution plots (separate files for each variable)
+    \item Box plots by condition/frame type
+    \item Violin plots
+    \item Interaction plots
+    \item Pie charts (independent files)
+    \item Scatter plots (six separate bivariate plots)
+    \item Correlation heatmaps
+    \item Q-Q plots and normality tests
+    \item Confidence RT analysis
+    \item Repeat/vigilance effects
+    \item Vigilance performance
+\end{enumerate}
+
+\textbf{Output Directory:} \texttt{visualizations/}
+
+\textbf{Execution:} \texttt{python3 data\_visualizations\_improved.py}
+
+\newpage
+\section{Interpretation Guidelines for Researchers}
+
+\subsection{Reading Distribution Plots}
+
+\begin{enumerate}
+    \item \textbf{Central tendency:} Where is the peak? Is mean = median (symmetric) or different (skewed)?
+    \item \textbf{Spread:} How variable is the data? Narrow = consistent, wide = heterogeneous
+    \item \textbf{Shape:} Normal (bell curve), skewed (tail), bimodal (two peaks)?
+    \item \textbf{Outliers:} Any extreme values? Data quality issues or genuine phenomena?
+\end{enumerate}
+
+\subsection{Reading Box Plots}
+
+\begin{enumerate}
+    \item \textbf{Median line:} Central tendency (robust to outliers)
+    \item \textbf{Box height (IQR):} Variability of middle 50\% of data
+    \item \textbf{Whisker length:} Full data range (excluding outliers)
+    \item \textbf{Outliers:} Points beyond whiskers (potential data issues or extreme cases)
+    \item \textbf{Group comparison:} Overlapping boxes = small difference; separated = large difference
+\end{enumerate}
+
+\subsection{Reading Interaction Plots}
+
+\begin{enumerate}
+    \item \textbf{Parallel lines:} No interaction (effects are additive)
+    \item \textbf{Crossing lines:} Strong interaction (effect reverses)
+    \item \textbf{Converging lines:} Interaction present (effect differs in magnitude)
+    \item \textbf{Statistical testing:} Visual patterns should be confirmed with ANOVA interaction test
+\end{enumerate}
+
+\subsection{Reading Correlation Heatmaps}
+
+\begin{enumerate}
+    \item \textbf{Diagonal:} Always 1.00 (self-correlation)
+    \item \textbf{Strong colors:} Strong correlations ($|r| > 0.5$)
+    \item \textbf{Pale colors:} Weak correlations ($|r| < 0.3$)
+    \item \textbf{Unexpected correlations:} May indicate confounds or multicollinearity
+    \item \textbf{Statistical significance:} Correlation strength $\neq$ significance (depends on sample size)
+\end{enumerate}
+
+\subsection{Reading Q-Q Plots}
+
+\begin{enumerate}
+    \item \textbf{Points on line:} Data are approximately normal
+    \item \textbf{Upper tail above line:} Right skew (positive skew)
+    \item \textbf{Lower tail below line:} Left skew (negative skew)
+    \item \textbf{S-curve:} Heavy tails (leptokurtic)
+    \item \textbf{Reverse S:} Light tails (platykurtic)
+    \item \textbf{Outliers:} Points far from line at extremes
+\end{enumerate}
+
+\section{Conclusion}
+
+This document provides a comprehensive methodological foundation for all visualizations generated in the BRSM Movie Memory experiment data analysis. Each plot type was selected to address specific research questions and hypotheses regarding how event boundary type (Abrupt vs. Natural) and frame position (Beginning vs. Ending) affect memory encoding and retrieval.
+
+The visualizations follow best practices in data visualization:
+\begin{itemize}
+    \item \textbf{Clarity:} Separate high-resolution figures prevent overcrowding
+    \item \textbf{Consistency:} Uniform color scheme aids interpretation across figures
+    \item \textbf{Completeness:} Multiple visualization types (distribution, comparison, correlation) provide comprehensive data view
+    \item \textbf{Statistical rigor:} Formal tests (normality, correlations) complement visual inspection
+    \item \textbf{Transparency:} All methodological choices explained and justified
+\end{itemize}
+
+Researchers can use these visualizations to:
+\begin{enumerate}
+    \item Assess data quality and distributional properties
+    \item Test theoretical hypotheses about event boundaries and memory
+    \item Identify patterns warranting further statistical analysis
+    \item Communicate findings effectively to scientific audiences
+\end{enumerate}
+
+\end{document}
