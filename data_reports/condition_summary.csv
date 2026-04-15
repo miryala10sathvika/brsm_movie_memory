@@ -1,5 +1,5 @@
 ,n_trials,n_trials,accuracy,accuracy,rt_mean,rt_mean,confidence_mean,confidence_mean
 ,mean,std,mean,std,mean,std,mean,std
 condition,,,,,,,,
-AB,48.358,16.385,0.838,0.084,5.582,1.491,4.077,0.431
-NB,45.063,14.839,0.872,0.069,5.834,1.636,4.209,0.407
+AB,40.0,0.0,0.84,0.082,5.572,1.467,4.081,0.457
+NB,40.0,0.0,0.871,0.072,5.802,1.668,4.201,0.414

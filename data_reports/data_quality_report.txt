@@ -1,13 +1,8 @@
 ================================================================================
 DATA QUALITY REPORT
 ================================================================================
-Abrupt movies: 45 entries
-Natural movies: 45 entries
-Target & Lures: 40 pairs
-  Found 171 total files
-AB (Abrupt) participants: 81
-NB (Natural) participants: 90
 
+Generated: 2026-04-14 21:56:25
 
 Total participants: 187
   - AB (Abrupt): 92
@@ -35,24 +30,24 @@ ACCURACY DISTRIBUTION
 --------------------------------------------------------------------------------
 
   AB Condition:
-    Mean accuracy: 0.838 ± 0.084
+    Mean accuracy: 0.840 ± 0.082
     Range: 0.575 - 0.975
 
   NB Condition:
-    Mean accuracy: 0.872 ± 0.069
-    Range: 0.675 - 0.988
+    Mean accuracy: 0.871 ± 0.072
+    Range: 0.650 - 1.000
 
 --------------------------------------------------------------------------------
 RESPONSE TIME DISTRIBUTION (seconds)
 --------------------------------------------------------------------------------
 
   AB Condition:
-    Mean RT: 5.582 ± 1.491
+    Mean RT: 5.572 ± 1.467
     Range: 3.251 - 11.633
 
   NB Condition:
-    Mean RT: 5.834 ± 1.636
-    Range: 3.256 - 12.180
+    Mean RT: 5.802 ± 1.668
+    Range: 2.981 - 12.180
 
 --------------------------------------------------------------------------------
 PROCESSING ISSUES

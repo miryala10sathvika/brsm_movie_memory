@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import re
 from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
@@ -90,14 +91,24 @@ print("  ✓ Defined column sets for extraction\n")
 
 
 def extract_participant_id(filename):
-    """Extract standardized participant ID from filename"""
-    # Handle cases like sub133_AB _ (with extra space)
-    parts = filename.split('_')
+    """Extract standardized participant ID from filename, not file contents."""
+    stem = Path(filename).stem
+
+    # Handles variants like:
+    # sub133_AB_recognitionstage...
+    # Sub41_AB_recognitionstage...
+    # sub133_AB _recognitionstage...
+    match = re.match(r'(?i)^(sub\d+)\s*_\s*(AB|NB)\b', stem)
+    if match:
+        return f"{match.group(1).lower()}_{match.group(2).upper()}"
+
+    parts = stem.split('_')
     if len(parts) >= 2:
-        sub_id = parts[0]
-        condition = parts[1].strip()  # Remove spaces
+        sub_id = parts[0].strip().lower()
+        condition = parts[1].strip().upper()
         return f"{sub_id}_{condition}"
-    return filename.split('_recognitionstage')[0]
+
+    return stem.strip()
 
 def process_participant_file(filepath, condition):
     """Process a single participant file and extract key data"""
@@ -105,14 +116,8 @@ def process_participant_file(filepath, condition):
         # Read the file
         df = pd.read_csv(filepath, low_memory=False)
         
-        # Extract participant ID
-        if 'participant' in df.columns and df['participant'].notna().any():
-            participant_id = df['participant'].dropna().iloc[0]
-        else:
-            participant_id = extract_participant_id(filepath.name)
-        
-        # Standardize participant ID (ensure consistent format)
-        participant_id = participant_id.strip()
+        # Always trust the filename; the in-file participant column is often wrong.
+        participant_id = extract_participant_id(filepath.name)
         
         # Demographics will be merged from separate file later
         # Not extracted from individual trial files (they only have question labels)
@@ -256,7 +261,12 @@ if demo_file.exists():
     })
     
     # Standardize participant IDs (handle "Sub" vs "sub")
-    df_demographics_raw['participant_id'] = df_demographics_raw['participant_id'].str.strip()
+    df_demographics_raw['participant_id'] = (
+        df_demographics_raw['participant_id']
+        .astype(str)
+        .str.strip()
+        .str.replace(r'(?i)^(sub\d+)\s*_\s*(AB|NB)\s*$', lambda m: f"{m.group(1).lower()}_{m.group(2).upper()}", regex=True)
+    )
     
     # Extract condition from participant ID if not present
     df_demographics_raw['condition'] = df_demographics_raw['participant_id'].str.extract(r'_(AB|NB)', expand=False)

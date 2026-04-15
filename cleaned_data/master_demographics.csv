@@ -1,5 +1,4 @@
 participant_id,age,gender,handedness,vision,condition
-Sub38_AB,20.0,Female,Right handed,Normal,AB
 sub01_AB,,,,,AB
 sub02_AB,22.0,Female,Right handed,Corrected to normal,AB
 sub03_AB,34.0,Male,Right handed,Normal,AB
@@ -74,6 +73,7 @@ sub34_AB,22.0,Female,Right handed,Corrected to normal,AB
 sub35_AB,26.0,Male,Right handed,Normal,AB
 sub36_AB,23.0,Male,Right handed,Corrected to normal,AB
 sub37_AB,21.0,Female,Right handed,Normal,AB
+sub38_AB,20.0,Female,Right handed,Normal,AB
 sub39_AB,,,,,AB
 sub40_AB,25.0,Male,Right handed,Corrected to normal,AB
 sub41_AB,22.0,Male,Left Handed,Normal,AB
@@ -184,5 +184,5 @@ sub82_NB,19.0,Male,Right handed,Corrected to normal,NB
 sub83_NB,22.0,Female,Right handed,Corrected to normal,NB
 sub84_NB,24.0,Male,Right handed,Corrected to normal,NB
 sub85_NB,24.0,Female,Right handed,Corrected to normal,NB
-,,,,,
-,,,,,
+nan,,,,,
+nan,,,,,
