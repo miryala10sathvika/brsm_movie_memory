@@ -717,6 +717,62 @@ def main():
     )
     results["Secondary_EM"] = rEM
 
+    # ── Secondary: 2×2 mixed-design interaction contrast ─────────────
+    # Test whether the within-participant BB-vs-EM difference differs by condition.
+    # Equivalent to testing the Condition × Frame Type interaction on REC.
+    BB = dvs["H2"][["participant_id", "condition", "REC_BB"]]
+    EM_rec = dvs["EM_rec"][["participant_id", "condition", "REC_EM"]]
+    interaction = BB.merge(EM_rec, on=["participant_id", "condition"], how="inner")
+    interaction["REC_BB_minus_REC_EM"] = interaction["REC_BB"] - interaction["REC_EM"]
+
+    rInt = two_group_test(
+        label="Secondary_Interaction",
+        dv_name="Interaction contrast: REC_BB - REC_EM (BB advantage)",
+        group1_name="NB",
+        group1_values=interaction.loc[
+            interaction.condition == "NB", "REC_BB_minus_REC_EM"
+        ].values,
+        group2_name="AB",
+        group2_values=interaction.loc[
+            interaction.condition == "AB", "REC_BB_minus_REC_EM"
+        ].values,
+        predicted_direction=">",  # predicted BB advantage larger in NB than AB
+    )
+    results["Secondary_Interaction"] = rInt
+
+    # ── Secondary: 2×2 mixed-design interaction contrast (confidence) ─
+    # Same interaction logic, but using mean confidence per frame type.
+    t_conf = trials.dropna(subset=["conf_radio.response"]).copy()
+    conf_bb = (
+        t_conf.loc[t_conf.target_type == "BB"]
+        .groupby(["participant_id", "condition"])["conf_radio.response"]
+        .mean()
+        .reset_index(name="conf_bb")
+    )
+    conf_em = (
+        t_conf.loc[t_conf.target_type == "EM"]
+        .groupby(["participant_id", "condition"])["conf_radio.response"]
+        .mean()
+        .reset_index(name="conf_em")
+    )
+    conf_int = conf_bb.merge(conf_em, on=["participant_id", "condition"], how="inner")
+    conf_int["conf_bb_minus_conf_em"] = conf_int["conf_bb"] - conf_int["conf_em"]
+
+    rIntConf = two_group_test(
+        label="Secondary_Interaction_Conf",
+        dv_name="Interaction contrast: Conf_BB - Conf_EM (BB confidence advantage)",
+        group1_name="NB",
+        group1_values=conf_int.loc[
+            conf_int.condition == "NB", "conf_bb_minus_conf_em"
+        ].values,
+        group2_name="AB",
+        group2_values=conf_int.loc[
+            conf_int.condition == "AB", "conf_bb_minus_conf_em"
+        ].values,
+        predicted_direction=">",  # predicted BB confidence advantage larger in NB
+    )
+    results["Secondary_Interaction_Conf"] = rIntConf
+
     # ── Secondary: trial-level log-RT Mann-Whitney (huge n) ──────────
     t_rt = dvs["trial_rt"]
     rt_nb = np.log(
@@ -763,7 +819,12 @@ def main():
 
     # Also write a compact CSV summary for primary + secondary
     rows = []
-    ordered_labels = primary + ["Secondary_RT", "Secondary_EM"]
+    ordered_labels = primary + [
+        "Secondary_RT",
+        "Secondary_EM",
+        "Secondary_Interaction",
+        "Secondary_Interaction_Conf",
+    ]
     for h in ordered_labels:
         r = results[h]
         rows.append(
@@ -863,6 +924,30 @@ def main():
         f"{g2} M={d2['mean']:.4f} SD={d2['sd']:.4f}\n"
         f"    Test: {r['test_used']}  stat={r['statistic']:.4f} "
         f"p2={r['p_two_sided']:.4g}\n"
+        f"    Effect ({r['effect_size_name']})={r['effect_size_value']:.4f}"
+    )
+
+    print("\n[SECONDARY] Condition × Frame interaction (REC_BB - REC_EM)")
+    r = results["Secondary_Interaction"]
+    g1, g2 = r["group1"], r["group2"]
+    d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
+    print(
+        f"    {g1} M={d1['mean']:.4f} SD={d1['sd']:.4f}  |  "
+        f"{g2} M={d2['mean']:.4f} SD={d2['sd']:.4f}\n"
+        f"    Test: {r['test_used']}  stat={r['statistic']:.4f} "
+        f"p2={r['p_two_sided']:.4g}  p1={r['p_one_sided']:.4g}\n"
+        f"    Effect ({r['effect_size_name']})={r['effect_size_value']:.4f}"
+    )
+
+    print("\n[SECONDARY] Condition × Frame interaction (Conf_BB - Conf_EM)")
+    r = results["Secondary_Interaction_Conf"]
+    g1, g2 = r["group1"], r["group2"]
+    d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
+    print(
+        f"    {g1} M={d1['mean']:.4f} SD={d1['sd']:.4f}  |  "
+        f"{g2} M={d2['mean']:.4f} SD={d2['sd']:.4f}\n"
+        f"    Test: {r['test_used']}  stat={r['statistic']:.4f} "
+        f"p2={r['p_two_sided']:.4g}  p1={r['p_one_sided']:.4g}\n"
         f"    Effect ({r['effect_size_name']})={r['effect_size_value']:.4f}"
     )
 
