@@ -1,41 +1,31 @@
 """
-Systematic statistical tests for the 5 hypotheses of the BRSM Movie Memory
-experiment, using the cleaned final data (170 participants, 6800 trials).
+Systematic statistical tests for the hypotheses of the BRSM Movie Memory
+experiment, using the cleaned final data.
 
-Hypotheses (indexed as in hypothesis_plots/):
-    H1: Overall recognition memory  (NB > AB)   — DV: REC = 2*accuracy - 1
-    H2: Before-Boundary (BB) recognition memory (NB > AB) — DV: REC_BB
-    H3: Overall confidence ratings  (NB > AB)
+Vigilance exclusions
+--------------------
+Two participants failed the built-in vigilance check and are excluded
+from every analysis here:
+    sub105_AB  (AB condition)
+    sub70_NB   (NB condition)
+Exclusion is applied at load time so all downstream analyses operate on
+the vigilance-filtered sample.
+
+Hypotheses
+----------
+    H1: Overall recognition memory  (NB > AB)   — DV: overall accuracy
+    H2: Before-Boundary (BB) recognition memory (NB > AB) — DV: BB accuracy
+    H3: Overall confidence ratings  (NB > AB)   — DV: mean conf (1-5 Likert)
     H4: Proportion of low-confidence trials (conf <= 3)  (AB > NB)
-    H5: Movie-level recognition variability (AB > NB)    — DV: SD of per-movie accuracy
+    H5: Movie-level accuracy variability (AB > NB)  — DV: SD of per-movie accuracy
+    H6: BB-frame targets take longer to recognise than EM-frame targets
+        (non-directional within-participant comparison) — DV: per-participant
+        mean log RT on BB trials vs mean log RT on EM trials (paired).
 
-    For every accuracy-based DV we use the 2AFC-adapted Recognition Memory
-    Index REC_i = 2 * accuracy_i - 1 (equivalent to Snodgrass & Corwin's Pr).
-    REC is a monotone affine transform of accuracy, so rank-based tests
-    return the same U, p, and rank-biserial r as raw accuracy — the
-    substitution is a re-scaling for bias-free interpretation.
-    LDI is intentionally NOT used anywhere (removed from this analysis).
-
-For each hypothesis we:
-    1. Build the per-participant DV from trial-level cleaned data.
-    2. Produce descriptive statistics per condition (n, mean, SD, median, IQR).
-    3. Test normality (Shapiro-Wilk) within each group.
-    4. Test homogeneity of variance (Levene, median-centred / Brown-Forsythe).
-    5. Pick the appropriate two-group test:
-           - both groups normal + equal variance  -> Student's independent t
-           - both groups normal + unequal variance -> Welch's t
-           - at least one group non-normal         -> Mann-Whitney U
-    6. Report the test statistic, df, one- and two-sided p-values
-       (all DVs have a directional hypothesis), and an effect size
-       matched to the test family (Cohen's d / Hedges' g for parametric,
-       rank-biserial r for Mann-Whitney).
-    7. Apply Benjamini-Hochberg (BH) FDR correction across the family of
-       primary p-values.
-
-We also run a secondary analysis on response time with a log-transformation
-(required because RTs are strongly right-skewed). The script writes
-normality-diagnostic plots (histogram + Q-Q) for raw RT and log RT so the
-log-transform's effect on normality can be verified visually.
+Multiple-comparison correction
+-------------------------------
+No correction for multiple comparisons is applied. All p-values reported
+are raw two-tailed (and one-tailed where directional) values.
 """
 
 from __future__ import annotations
@@ -60,6 +50,9 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 ALPHA = 0.05
 RNG_SEED = 20260415
 
+# Participants excluded for failing the vigilance check
+VIGILANCE_EXCLUSIONS = {"sub105_AB", "sub70_NB"}
+
 
 # ──────────────────────────────────────────────────────────────────────
 # Data loading
@@ -67,6 +60,10 @@ RNG_SEED = 20260415
 def load_data():
     trials = pd.read_csv(DATA_DIR / "trials_final_clean.csv")
     pp = pd.read_csv(DATA_DIR / "participants_final_clean_with_vigilance.csv")
+
+    # Exclude vigilance failures
+    pp = pp[~pp["participant_id"].isin(VIGILANCE_EXCLUSIONS)].copy()
+    trials = trials[~trials["participant_id"].isin(VIGILANCE_EXCLUSIONS)].copy()
 
     trials["resp.corr"] = pd.to_numeric(trials["resp.corr"], errors="coerce")
     trials["resp.rt"] = pd.to_numeric(trials["resp.rt"], errors="coerce")
@@ -91,7 +88,7 @@ def load_data():
 # ──────────────────────────────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────────────────────────────
-def describe(series: pd.Series) -> dict:
+def describe(series) -> dict:
     s = pd.Series(series).dropna().astype(float)
     q1, med, q3 = np.percentile(s, [25, 50, 75]) if len(s) else (np.nan,) * 3
     return {
@@ -292,6 +289,90 @@ def two_group_test(
 
 
 # ──────────────────────────────────────────────────────────────────────
+# Paired test (used for H6 — BB vs EM log RT within participants)
+# ──────────────────────────────────────────────────────────────────────
+def paired_test(
+    label: str,
+    dv_name: str,
+    group1_name: str,
+    group1_values,
+    group2_name: str,
+    group2_values,
+) -> dict:
+    """Paired comparison (one-sample test on within-participant differences).
+
+    Tests normality of the difference scores:
+      - Normal differences → one-sample t-test against 0 (two-tailed)
+      - Non-normal           → Wilcoxon signed-rank test (two-tailed)
+    Effect size: Cohen's d_z (t / sqrt(n)) for t-test;
+                 rank-biserial r for Wilcoxon.
+    """
+    x = np.asarray(pd.Series(group1_values).dropna(), dtype=float)
+    y = np.asarray(pd.Series(group2_values).dropna(), dtype=float)
+    diffs = x - y
+    n = len(diffs)
+
+    desc_g1 = describe(x)
+    desc_g2 = describe(y)
+    desc_diff = describe(diffs)
+
+    sw = stats.shapiro(diffs) if 3 <= n <= 5000 else (np.nan, np.nan)
+    normal_diffs = (not np.isnan(sw[1])) and sw[1] >= ALPHA
+
+    if normal_diffs:
+        t_stat, p_val = stats.ttest_1samp(diffs, 0)
+        d_z = float(diffs.mean() / diffs.std(ddof=1))
+        return {
+            "label": label,
+            "dv": dv_name,
+            "group1": group1_name,
+            "group2": group2_name,
+            "n_pairs": int(n),
+            "descriptives": {group1_name: desc_g1, group2_name: desc_g2,
+                             "difference": desc_diff},
+            "normality_of_diffs": {
+                "shapiro_W": float(sw[0]), "p": float(sw[1]),
+                "normal": bool(normal_diffs),
+            },
+            "test_used": "One-sample t-test on differences (paired, two-tailed)",
+            "statistic_name": "t",
+            "statistic": float(t_stat),
+            "df": float(n - 1),
+            "p_two_sided": float(p_val),
+            "effect_size_name": "Cohen's d_z",
+            "effect_size_value": float(d_z),
+        }
+    else:
+        w_stat, p_val = stats.wilcoxon(diffs, alternative="two-sided")
+        # Rank-biserial r = 1 - 2*W / (n*(n+1)/2) … alternative: r = z/sqrt(n)
+        # Use the z-approximation
+        mu_w = n * (n + 1) / 4.0
+        sigma_w = math.sqrt(n * (n + 1) * (2 * n + 1) / 24.0)
+        z_w = (w_stat - mu_w) / sigma_w if sigma_w > 0 else np.nan
+        r_rb = float(z_w / math.sqrt(n)) if not np.isnan(z_w) else np.nan
+        return {
+            "label": label,
+            "dv": dv_name,
+            "group1": group1_name,
+            "group2": group2_name,
+            "n_pairs": int(n),
+            "descriptives": {group1_name: desc_g1, group2_name: desc_g2,
+                             "difference": desc_diff},
+            "normality_of_diffs": {
+                "shapiro_W": float(sw[0]), "p": float(sw[1]),
+                "normal": bool(normal_diffs),
+            },
+            "test_used": "Wilcoxon signed-rank test (paired, two-tailed)",
+            "statistic_name": "W",
+            "statistic": float(w_stat),
+            "df": None,
+            "p_two_sided": float(p_val),
+            "effect_size_name": "Rank-biserial r (z/sqrt(n))",
+            "effect_size_value": float(r_rb),
+        }
+
+
+# ──────────────────────────────────────────────────────────────────────
 # Per-hypothesis DV construction
 # ──────────────────────────────────────────────────────────────────────
 def build_dvs(trials: pd.DataFrame) -> dict:
@@ -302,16 +383,7 @@ def build_dvs(trials: pd.DataFrame) -> dict:
     contributes exactly one Bernoulli outcome per participant. Each
     participant sees 40 movies, balanced as 20 BB + 20 EM targets.
 
-    All accuracy-based hypotheses are expressed on the 2AFC-adapted
-    Recognition Memory Index
-
-        REC_i = 2 * accuracy_i - 1        (range [-1, +1], 0 = chance)
-
-    REC is a monotone affine transform of raw accuracy, so rank-based
-    tests on REC return identical statistics to rank-based tests on
-    accuracy. The substitution changes only the descriptive means and
-    effect-size units, giving us a bias-free interpretation (REC = 0
-    means chance, REC = 1 means perfect). LDI is NOT computed.
+    All accuracy-based DVs use raw proportion correct (0–1 scale).
     """
     t = trials.copy()
 
@@ -321,25 +393,22 @@ def build_dvs(trials: pd.DataFrame) -> dict:
         .mean()
         .reset_index(name="acc")
     )
-    pp_acc["REC"] = 2.0 * pp_acc["acc"] - 1.0
 
-    # BB-frame accuracy (20 trials per participant) -> REC_BB
+    # BB-frame accuracy (20 trials per participant)
     bb = t[t.target_type == "BB"]
     pp_bb = (
         bb.groupby(["participant_id", "condition"])["resp.corr"]
         .mean()
         .reset_index(name="bb_acc")
     )
-    pp_bb["REC_BB"] = 2.0 * pp_bb["bb_acc"] - 1.0
 
-    # EM-frame accuracy (20 trials per participant) -> REC_EM
+    # EM-frame accuracy (20 trials per participant)
     em = t[t.target_type == "EM"]
     pp_em = (
         em.groupby(["participant_id", "condition"])["resp.corr"]
         .mean()
         .reset_index(name="em_acc")
     )
-    pp_em["REC_EM"] = 2.0 * pp_em["em_acc"] - 1.0
 
     # Mean confidence (1-5 Likert)
     pp_conf = (
@@ -356,9 +425,7 @@ def build_dvs(trials: pd.DataFrame) -> dict:
         .reset_index(name="prop_lc")
     )
 
-    # Per-movie REC (each movie contributes a single 0/1 trial per
-    # participant, so per-movie REC ∈ {-1, +1}). Then take the
-    # participant-level SD across the 40 per-movie REC values.
+    # Per-movie accuracy SD (H5 DV)
     pp_movie_acc = (
         t.groupby(["participant_id", "condition", "movie_id"])["resp.corr"]
         .mean()
@@ -370,7 +437,7 @@ def build_dvs(trials: pd.DataFrame) -> dict:
         .reset_index(name="movie_acc_sd")
     )
 
-    # Response time: participant-level log mean RT (for secondary analysis)
+    # Response time: participant-level mean log RT (overall and by frame type)
     t_rt = t.dropna(subset=["resp.rt"]).copy()
     t_rt = t_rt[t_rt["resp.rt"] > 0]
     t_rt["log_rt"] = np.log(t_rt["resp.rt"])
@@ -386,13 +453,29 @@ def build_dvs(trials: pd.DataFrame) -> dict:
         .reset_index(name="mean_rt")
     )
 
+    # H6: per-participant mean log RT for BB trials and EM trials (paired)
+    bb_rt = (
+        t_rt[t_rt.target_type == "BB"]
+        .groupby(["participant_id", "condition"])["log_rt"]
+        .mean()
+        .reset_index(name="bb_log_rt")
+    )
+    em_rt = (
+        t_rt[t_rt.target_type == "EM"]
+        .groupby(["participant_id", "condition"])["log_rt"]
+        .mean()
+        .reset_index(name="em_log_rt")
+    )
+    pp_h6 = bb_rt.merge(em_rt, on=["participant_id", "condition"], how="inner")
+
     return {
-        "H1": pp_acc,           # has columns: acc, REC
-        "H2": pp_bb,            # has columns: bb_acc, REC_BB
+        "H1": pp_acc,           # acc, REC
+        "H2": pp_bb,            # bb_acc, REC_BB
         "H3": pp_conf,
         "H4": pp_lc,
         "H5": pp_acc_sd,        # SD of per-movie accuracy
-        "EM_rec": pp_em,        # has columns: em_acc, REC_EM
+        "H6": pp_h6,            # bb_log_rt, em_log_rt (paired per participant)
+        "EM_rec": pp_em,        # em_acc, REC_EM
         "RT_log": pp_logrt,
         "RT_raw": pp_rawrt,
         "trial_rt": t_rt,
@@ -406,8 +489,7 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
     """Histogram + Q-Q plot for raw RT and log RT at participant & trial level.
 
     Returns the formal Shapiro-Wilk statistics so the report can cite the
-    exact numbers used to judge whether log-transformation rescued
-    normality.
+    exact numbers used to judge whether log-transformation rescued normality.
     """
     pp_raw = dvs["RT_raw"]
     pp_log = dvs["RT_log"]
@@ -441,7 +523,6 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
     # Trial-level Shapiro-Wilk (capped at 5000 by scipy)
     trial_raw = trial_rt["resp.rt"].values
     trial_log = trial_rt["log_rt"].values
-    # Use a sample of 5000 if needed
     rng = np.random.default_rng(RNG_SEED)
     if len(trial_raw) > 5000:
         idx = rng.choice(len(trial_raw), size=5000, replace=False)
@@ -475,7 +556,6 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
         raw_vals = pp_raw.loc[pp_raw.condition == cond, "mean_rt"].values
         log_vals = pp_log.loc[pp_log.condition == cond, "mean_log_rt"].values
 
-        # Raw histogram
         ax = axes[0, col * 2]
         ax.hist(raw_vals, bins=20, color=colours[cond], alpha=0.75,
                 edgecolor="black")
@@ -484,13 +564,11 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
         ax.set_xlabel("mean RT (s)")
         ax.set_ylabel("count")
 
-        # Raw Q-Q
         ax = axes[1, col * 2]
         stats.probplot(raw_vals, dist="norm", plot=ax)
         ax.set_title(f"{cond} — raw Q-Q")
         ax.get_lines()[0].set_color(colours[cond])
 
-        # Log histogram
         ax = axes[0, col * 2 + 1]
         ax.hist(log_vals, bins=20, color=colours[cond], alpha=0.75,
                 edgecolor="black")
@@ -499,7 +577,6 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
         ax.set_xlabel("ln mean RT")
         ax.set_ylabel("count")
 
-        # Log Q-Q
         ax = axes[1, col * 2 + 1]
         stats.probplot(log_vals, dist="norm", plot=ax)
         ax.set_title(f"{cond} — log Q-Q")
@@ -538,7 +615,6 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
     ax.set_ylabel("count")
 
     ax = axes[1, 0]
-    # Sub-sample for Q-Q to keep the plot readable
     sample_raw = trial_raw if len(trial_raw) <= 2000 else rng.choice(
         trial_raw, size=2000, replace=False
     )
@@ -569,6 +645,64 @@ def plot_rt_normality(dvs: dict, out_dir: Path) -> dict:
 
 
 # ──────────────────────────────────────────────────────────────────────
+# H6: plot — BB vs EM log RT comparison
+# ──────────────────────────────────────────────────────────────────────
+def plot_h6_bb_em_logrt(dvs: dict, out_dir: Path) -> str:
+    """Two-panel plot for H6 (BB vs EM log RT within participants).
+
+    Left: violin + strip plot of BB and EM mean log RT distributions.
+    Right: histogram of per-participant BB − EM differences with
+           vertical line at 0.
+    """
+    h6 = dvs["H6"]
+    bb_vals = h6["bb_log_rt"].values
+    em_vals = h6["em_log_rt"].values
+    diffs = bb_vals - em_vals
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    colours = {"BB": "#e07b39", "EM": "#5b7fba"}
+
+    # Left: violin + individual points
+    ax = axes[0]
+    parts = ax.violinplot([bb_vals, em_vals], positions=[1, 2],
+                          showmedians=True, showextrema=True)
+    for pc, col in zip(parts["bodies"], [colours["BB"], colours["EM"]]):
+        pc.set_facecolor(col)
+        pc.set_alpha(0.65)
+    rng = np.random.default_rng(RNG_SEED)
+    jitter = rng.uniform(-0.06, 0.06, size=len(bb_vals))
+    ax.scatter(1 + jitter, bb_vals, color=colours["BB"], alpha=0.45, s=18, zorder=3)
+    ax.scatter(2 + jitter, em_vals, color=colours["EM"], alpha=0.45, s=18, zorder=3)
+    ax.set_xticks([1, 2])
+    ax.set_xticklabels(["BB targets", "EM targets"], fontsize=11)
+    ax.set_ylabel("Mean log RT (ln s)", fontsize=11)
+    ax.set_title("BB vs EM: mean log RT per participant", fontsize=12)
+    ax.grid(axis="y", alpha=0.3)
+
+    # Right: histogram of differences
+    ax = axes[1]
+    ax.hist(diffs, bins=25, color="#7a5c9e", alpha=0.8, edgecolor="black")
+    ax.axvline(0, color="red", lw=1.8, linestyle="--", label="Zero (no diff)")
+    ax.axvline(float(np.mean(diffs)), color="black", lw=1.8,
+               linestyle="-", label=f"Mean diff = {np.mean(diffs):.3f}")
+    ax.set_xlabel("BB − EM mean log RT (ln s)", fontsize=11)
+    ax.set_ylabel("Count", fontsize=11)
+    ax.set_title("Distribution of BB − EM log RT differences", fontsize=12)
+    ax.legend(fontsize=9)
+    ax.grid(alpha=0.3)
+
+    fig.suptitle(
+        "H6: BB-frame vs EM-frame mean log RT (within-participant)",
+        fontsize=13, fontweight="bold",
+    )
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    path = out_dir / "h6_bb_em_logrt.png"
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return str(path)
+
+
+# ──────────────────────────────────────────────────────────────────────
 # Benjamini-Hochberg FDR correction
 # ──────────────────────────────────────────────────────────────────────
 def benjamini_hochberg(pvals: list[float]) -> list[float]:
@@ -585,7 +719,6 @@ def benjamini_hochberg(pvals: list[float]) -> list[float]:
     order = np.argsort(p)
     ranked = p[order]
     q = ranked * m / (np.arange(m) + 1)
-    # Enforce monotonicity (cumulative minimum from the right)
     for i in range(m - 2, -1, -1):
         if q[i] > q[i + 1]:
             q[i] = q[i + 1]
@@ -601,8 +734,10 @@ def benjamini_hochberg(pvals: list[float]) -> list[float]:
 def main():
     trials, pp = load_data()
 
+    n_excluded = len(VIGILANCE_EXCLUSIONS)
     print("=" * 72)
-    print(f"Loaded {len(pp)} participants, {len(trials)} trials")
+    print(f"Vigilance exclusions: {sorted(VIGILANCE_EXCLUSIONS)} (n={n_excluded})")
+    print(f"Analysed: {len(pp)} participants, {len(trials)} trials")
     print(pp.condition.value_counts().to_dict())
     print("=" * 72)
 
@@ -611,31 +746,41 @@ def main():
     # Log-RT normality diagnostics and plots
     rt_diag = plot_rt_normality(dvs, OUT_DIR)
 
-    results = {}
-    results["_rt_normality_diagnostics"] = rt_diag
+    # H6 plot — BB vs EM log RT
+    h6_plot_path = plot_h6_bb_em_logrt(dvs, OUT_DIR)
 
-    # ── H1: overall recognition memory (REC = 2*acc - 1) ──────────────
+    results = {}
+    results["_meta"] = {
+        "vigilance_exclusions": sorted(VIGILANCE_EXCLUSIONS),
+        "n_excluded": n_excluded,
+        "n_analysed": int(len(pp)),
+        "n_trials": int(len(trials)),
+    }
+    results["_rt_normality_diagnostics"] = rt_diag
+    results["_h6_plot_path"] = h6_plot_path
+
+    # ── H1: overall recognition accuracy ──────────────────────────────
     H1 = dvs["H1"]
     r1 = two_group_test(
         label="H1",
-        dv_name="Overall REC (Recognition Memory Index = 2*accuracy - 1)",
+        dv_name="Overall accuracy (proportion correct)",
         group1_name="NB",
-        group1_values=H1.loc[H1.condition == "NB", "REC"].values,
+        group1_values=H1.loc[H1.condition == "NB", "acc"].values,
         group2_name="AB",
-        group2_values=H1.loc[H1.condition == "AB", "REC"].values,
+        group2_values=H1.loc[H1.condition == "AB", "acc"].values,
         predicted_direction=">",
     )
     results["H1"] = r1
 
-    # ── H2: BB-frame REC (REC_BB = 2*acc_BB - 1) ──────────────────────
+    # ── H2: BB-frame accuracy ──────────────────────────────────────────
     H2 = dvs["H2"]
     r2 = two_group_test(
         label="H2",
-        dv_name="Before-Boundary REC_BB (2*acc_BB - 1)",
+        dv_name="Before-Boundary accuracy (proportion correct)",
         group1_name="NB",
-        group1_values=H2.loc[H2.condition == "NB", "REC_BB"].values,
+        group1_values=H2.loc[H2.condition == "NB", "bb_acc"].values,
         group2_name="AB",
-        group2_values=H2.loc[H2.condition == "AB", "REC_BB"].values,
+        group2_values=H2.loc[H2.condition == "AB", "bb_acc"].values,
         predicted_direction=">",
     )
     results["H2"] = r2
@@ -653,7 +798,7 @@ def main():
     )
     results["H3"] = r3
 
-    # ── H4: proportion of low-confidence trials (conf <= 3) ───────────
+    # ── H4: proportion of low-confidence trials ───────────────────────
     H4 = dvs["H4"]
     r4 = two_group_test(
         label="H4",
@@ -666,11 +811,11 @@ def main():
     )
     results["H4"] = r4
 
-    # ── H5: per-movie accuracy SD ─────────────────────────────────────
+    # ── H5: per-movie accuracy SD ──────────────────────────────────────
     H5 = dvs["H5"]
     r5 = two_group_test(
         label="H5",
-        dv_name="SD of per-movie accuracy (movie-level memory variability)",
+        dv_name="SD of per-movie accuracy (movie-level variability)",
         group1_name="AB",
         group1_values=H5.loc[H5.condition == "AB", "movie_acc_sd"].values,
         group2_name="NB",
@@ -679,17 +824,19 @@ def main():
     )
     results["H5"] = r5
 
-    # ── Benjamini-Hochberg FDR over primary 5 hypotheses ─────────────
-    primary = ["H1", "H2", "H3", "H4", "H5"]
-    p_two = [results[h]["p_two_sided"] for h in primary]
-    p_one = [results[h]["p_one_sided"] for h in primary]
-    adj_two = benjamini_hochberg(p_two)
-    adj_one = benjamini_hochberg(p_one)
-    for h, a2, a1 in zip(primary, adj_two, adj_one):
-        results[h]["p_two_sided_bh"] = a2
-        results[h]["p_one_sided_bh"] = a1
-        results[h]["reject_H0_alpha05_two_sided_bh"] = bool(a2 < ALPHA)
-        results[h]["reject_H0_alpha05_one_sided_bh"] = bool(a1 < ALPHA)
+    # ── H6: BB vs EM log RT — within-participant paired comparison ────
+    H6 = dvs["H6"]
+    r6 = paired_test(
+        label="H6",
+        dv_name="BB vs EM mean log RT (within-participant paired comparison)",
+        group1_name="BB",
+        group1_values=H6["bb_log_rt"].values,
+        group2_name="EM",
+        group2_values=H6["em_log_rt"].values,
+    )
+    results["H6"] = r6
+
+    # No multiple-comparison correction is applied to any hypothesis.
 
     # ── Secondary: log-RT, NB vs AB at participant level ─────────────
     ppRT = dvs["RT_log"]
@@ -700,48 +847,45 @@ def main():
         group1_values=ppRT.loc[ppRT.condition == "NB", "mean_log_rt"].values,
         group2_name="AB",
         group2_values=ppRT.loc[ppRT.condition == "AB", "mean_log_rt"].values,
-        predicted_direction="<",  # Natural predicted FASTER -> mean log RT smaller
+        predicted_direction="<",
     )
     results["Secondary_RT"] = rRT
 
-    # ── Secondary: EM-frame REC (predicted null) ─────────────────────
+    # ── Secondary: EM-frame accuracy (predicted null) ─────────────────
     EM = dvs["EM_rec"]
     rEM = two_group_test(
         label="Secondary_EM",
-        dv_name="Event-middle REC_EM (2*acc_EM - 1)",
+        dv_name="Event-middle accuracy (proportion correct)",
         group1_name="NB",
-        group1_values=EM.loc[EM.condition == "NB", "REC_EM"].values,
+        group1_values=EM.loc[EM.condition == "NB", "em_acc"].values,
         group2_name="AB",
-        group2_values=EM.loc[EM.condition == "AB", "REC_EM"].values,
-        predicted_direction=">",  # Kept for symmetry; prediction says ~null
+        group2_values=EM.loc[EM.condition == "AB", "em_acc"].values,
+        predicted_direction=">",
     )
     results["Secondary_EM"] = rEM
 
-    # ── Secondary: 2×2 mixed-design interaction contrast ─────────────
-    # Test whether the within-participant BB-vs-EM difference differs by condition.
-    # Equivalent to testing the Condition × Frame Type interaction on REC.
-    BB = dvs["H2"][["participant_id", "condition", "REC_BB"]]
-    EM_rec = dvs["EM_rec"][["participant_id", "condition", "REC_EM"]]
-    interaction = BB.merge(EM_rec, on=["participant_id", "condition"], how="inner")
-    interaction["REC_BB_minus_REC_EM"] = interaction["REC_BB"] - interaction["REC_EM"]
+    # ── Secondary: Condition × Frame Type interaction (accuracy) ──────
+    BB_acc = dvs["H2"][["participant_id", "condition", "bb_acc"]]
+    EM_acc = dvs["EM_rec"][["participant_id", "condition", "em_acc"]]
+    interaction = BB_acc.merge(EM_acc, on=["participant_id", "condition"], how="inner")
+    interaction["bb_minus_em"] = interaction["bb_acc"] - interaction["em_acc"]
 
     rInt = two_group_test(
         label="Secondary_Interaction",
-        dv_name="Interaction contrast: REC_BB - REC_EM (BB advantage)",
+        dv_name="Interaction contrast: accuracy_BB - accuracy_EM (BB advantage)",
         group1_name="NB",
         group1_values=interaction.loc[
-            interaction.condition == "NB", "REC_BB_minus_REC_EM"
+            interaction.condition == "NB", "bb_minus_em"
         ].values,
         group2_name="AB",
         group2_values=interaction.loc[
-            interaction.condition == "AB", "REC_BB_minus_REC_EM"
+            interaction.condition == "AB", "bb_minus_em"
         ].values,
-        predicted_direction=">",  # predicted BB advantage larger in NB than AB
+        predicted_direction=">",
     )
     results["Secondary_Interaction"] = rInt
 
-    # ── Secondary: 2×2 mixed-design interaction contrast (confidence) ─
-    # Same interaction logic, but using mean confidence per frame type.
+    # ── Secondary: Condition × Frame Type interaction (confidence) ────
     t_conf = trials.dropna(subset=["conf_radio.response"]).copy()
     conf_bb = (
         t_conf.loc[t_conf.target_type == "BB"]
@@ -769,11 +913,11 @@ def main():
         group2_values=conf_int.loc[
             conf_int.condition == "AB", "conf_bb_minus_conf_em"
         ].values,
-        predicted_direction=">",  # predicted BB confidence advantage larger in NB
+        predicted_direction=">",
     )
     results["Secondary_Interaction_Conf"] = rIntConf
 
-    # ── Secondary: trial-level log-RT Mann-Whitney (huge n) ──────────
+    # ── Secondary: trial-level log-RT Welch t + Mann-Whitney ─────────
     t_rt = dvs["trial_rt"]
     rt_nb = np.log(
         t_rt.loc[t_rt.condition == "NB", "resp.rt"].values.astype(float)
@@ -781,7 +925,6 @@ def main():
     rt_ab = np.log(
         t_rt.loc[t_rt.condition == "AB", "resp.rt"].values.astype(float)
     )
-    # Use Welch t on log-RT for trial-level (CLT applies heavily at n≈6800)
     t_stat, t_p = stats.ttest_ind(rt_nb, rt_ab, equal_var=False)
     u_stat, u_p = stats.mannwhitneyu(rt_nb, rt_ab, alternative="two-sided")
     results["Secondary_RT_trial_level"] = {
@@ -817,32 +960,35 @@ def main():
     out_json.write_text(json.dumps(_clean(results), indent=2))
     print(f"\nSaved JSON -> {out_json}")
 
-    # Also write a compact CSV summary for primary + secondary
+    # Compact CSV summary
     rows = []
-    ordered_labels = primary + [
+    primary_labels = ["H1", "H2", "H3", "H4", "H5"]
+    secondary_labels = [
         "Secondary_RT",
         "Secondary_EM",
         "Secondary_Interaction",
         "Secondary_Interaction_Conf",
     ]
-    for h in ordered_labels:
+    for h in primary_labels + secondary_labels:
         r = results[h]
+        g1, g2 = r["group1"], r["group2"]
+        d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
         rows.append(
             {
                 "label": r["label"],
                 "dv": r["dv"],
-                "g1": r["group1"],
-                "g2": r["group2"],
-                "n_g1": r["descriptives"][r["group1"]]["n"],
-                "n_g2": r["descriptives"][r["group2"]]["n"],
-                "mean_g1": r["descriptives"][r["group1"]]["mean"],
-                "mean_g2": r["descriptives"][r["group2"]]["mean"],
-                "sd_g1": r["descriptives"][r["group1"]]["sd"],
-                "sd_g2": r["descriptives"][r["group2"]]["sd"],
-                "median_g1": r["descriptives"][r["group1"]]["median"],
-                "median_g2": r["descriptives"][r["group2"]]["median"],
-                "shapiro_p_g1": r["normality"][r["group1"]]["p"],
-                "shapiro_p_g2": r["normality"][r["group2"]]["p"],
+                "g1": g1,
+                "g2": g2,
+                "n_g1": d1["n"],
+                "n_g2": d2["n"],
+                "mean_g1": d1["mean"],
+                "mean_g2": d2["mean"],
+                "sd_g1": d1["sd"],
+                "sd_g2": d2["sd"],
+                "median_g1": d1["median"],
+                "median_g2": d2["median"],
+                "shapiro_p_g1": r["normality"][g1]["p"],
+                "shapiro_p_g2": r["normality"][g2]["p"],
                 "levene_p": r["levene"]["p"],
                 "test_used": r["test_used"],
                 "statistic": r["statistic"],
@@ -851,22 +997,50 @@ def main():
                 "p_one_sided": r["p_one_sided"],
                 "effect_size_name": r["effect_size_name"],
                 "effect_size_value": r["effect_size_value"],
-                "p_two_sided_bh": r.get("p_two_sided_bh"),
-                "p_one_sided_bh": r.get("p_one_sided_bh"),
             }
         )
+    # H6 row (paired test — slightly different structure)
+    r6 = results["H6"]
+    d_bb = r6["descriptives"]["BB"]
+    d_em = r6["descriptives"]["EM"]
+    rows.append({
+        "label": r6["label"],
+        "dv": r6["dv"],
+        "g1": "BB",
+        "g2": "EM",
+        "n_g1": r6["n_pairs"],
+        "n_g2": r6["n_pairs"],
+        "mean_g1": d_bb["mean"],
+        "mean_g2": d_em["mean"],
+        "sd_g1": d_bb["sd"],
+        "sd_g2": d_em["sd"],
+        "median_g1": d_bb["median"],
+        "median_g2": d_em["median"],
+        "shapiro_p_g1": r6["normality_of_diffs"]["p"],
+        "shapiro_p_g2": None,
+        "levene_p": None,
+        "test_used": r6["test_used"],
+        "statistic": r6["statistic"],
+        "df": r6.get("df"),
+        "p_two_sided": r6["p_two_sided"],
+        "p_one_sided": None,
+        "effect_size_name": r6["effect_size_name"],
+        "effect_size_value": r6["effect_size_value"],
+    })
+
     df_out = pd.DataFrame(rows)
     df_out.to_csv(OUT_DIR / "hypothesis_test_summary.csv", index=False)
     print(f"Saved CSV  -> {OUT_DIR / 'hypothesis_test_summary.csv'}")
 
-    # Print a compact console summary
+    # Console summary
     print("\n" + "=" * 72)
     print(" PRIMARY HYPOTHESES — DECISION SUMMARY")
     print("=" * 72)
-    for h in primary:
+    for h in primary_labels:
         r = results[h]
         g1, g2 = r["group1"], r["group2"]
         d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
+        fam = r.get("bh_family", "—")
         print(
             f"[{h}] {r['dv']}\n"
             f"    {g1}: n={d1['n']} M={d1['mean']:.4f} SD={d1['sd']:.4f}"
@@ -876,11 +1050,31 @@ def main():
             f"Levene p={r['levene']['p']:.4g}\n"
             f"    Test: {r['test_used']}\n"
             f"    Stat={r['statistic']:.4f}  df={r.get('df')}  "
-            f"p2={r['p_two_sided']:.4g}  p1={r['p_one_sided']:.4g}  "
-            f"BH-p2={r['p_two_sided_bh']:.4g}\n"
+            f"p2={r['p_two_sided']:.4g}  p1={r['p_one_sided']:.4g}\n"
             f"    Effect ({r['effect_size_name']}) = "
             f"{r['effect_size_value']:.4f}\n"
         )
+
+    print("=" * 72)
+    print(" H6 — BB vs EM LOG RT (WITHIN-PARTICIPANT PAIRED COMPARISON)")
+    print("=" * 72)
+    r6 = results["H6"]
+    d_bb = r6["descriptives"]["BB"]
+    d_em = r6["descriptives"]["EM"]
+    d_diff = r6["descriptives"]["difference"]
+    print(
+        f"    n pairs = {r6['n_pairs']}\n"
+        f"    BB log RT: M={d_bb['mean']:.4f} SD={d_bb['sd']:.4f}\n"
+        f"    EM log RT: M={d_em['mean']:.4f} SD={d_em['sd']:.4f}\n"
+        f"    Difference (BB-EM): M={d_diff['mean']:.4f} SD={d_diff['sd']:.4f}\n"
+        f"    Normality of diffs: Shapiro p={r6['normality_of_diffs']['p']:.4g}  "
+        f"(normal? {r6['normality_of_diffs']['normal']})\n"
+        f"    Test: {r6['test_used']}\n"
+        f"    Stat={r6['statistic']:.4f}  df={r6.get('df')}  "
+        f"p (two-sided) = {r6['p_two_sided']:.4g}  (no BH applied)\n"
+        f"    Effect ({r6['effect_size_name']}) = {r6['effect_size_value']:.4f}\n"
+        f"    Plot saved: {h6_plot_path}\n"
+    )
 
     print("=" * 72)
     print(" RT NORMALITY — LOG-TRANSFORM DIAGNOSTIC")
@@ -901,9 +1095,8 @@ def main():
         f"  trial: raw skew={tr['skew']:.2f}  Shapiro p={tr['shapiro_p']:.3g}  |  "
         f"log skew={tl['skew']:.2f}  Shapiro p={tl['shapiro_p']:.3g}"
     )
-    print(f"  Plots saved: {rt_diag['plot_paths']}")
 
-    print("\n[SECONDARY] Participant-level log RT")
+    print("\n[SECONDARY] Participant-level log RT (NB vs AB)")
     r = results["Secondary_RT"]
     g1, g2 = r["group1"], r["group2"]
     d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
@@ -927,7 +1120,7 @@ def main():
         f"    Effect ({r['effect_size_name']})={r['effect_size_value']:.4f}"
     )
 
-    print("\n[SECONDARY] Condition × Frame interaction (REC_BB - REC_EM)")
+    print("\n[SECONDARY] Condition × Frame interaction (accuracy_BB - accuracy_EM)")
     r = results["Secondary_Interaction"]
     g1, g2 = r["group1"], r["group2"]
     d1, d2 = r["descriptives"][g1], r["descriptives"][g2]
@@ -962,6 +1155,8 @@ def main():
         f"p={rt_trial['mann_whitney_p_two_sided']:.4g}  "
         f"r_rb={rt_trial['rank_biserial']:.4f}"
     )
+
+    return results
 
 
 if __name__ == "__main__":
