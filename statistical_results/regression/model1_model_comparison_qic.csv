@@ -1,0 +1,9 @@
+model,qic,stable,description
+M1_stim_main,5433.294785848696,True,Main effects; + stimulus duration.
+M1_stim_interaction,5433.485411027825,True,Adds interaction; + stimulus duration.
+M1_demo_main,5465.755561332572,True,"Main effects; design + demographics (age, gender, handedness, vision)."
+M1_demo_interaction,5465.949975079957,True,Adds interaction; design + demographics.
+M1_core_main,5492.052391910391,True,Main effects; core design variables only.
+M1_core_interaction,5492.241380967202,True,Adds condition × target_type interaction; core design variables only.
+M1_movieFE_interaction,,False,Adds interaction; + movie fixed effects.
+M1_movieFE_main,,False,Main effects; + demographics + duration + movie fixed effects.

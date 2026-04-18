@@ -1,0 +1,44 @@
+STRICT REGRESSION PIPELINE — SUMMARY
+========================================================================
+Vigilance exclusions: ['sub105_AB', 'sub70_NB']
+Trial rows (after cleaning for modeling): 6,720
+
+Feature policy (strict; assignment-style):
+  Included (pre-response): condition, target_type, is_repeat, movie_duration, stimulus_id
+  Optional controls (pre-treatment): age, gender, handedness, vision
+  Excluded (leakage / post-response): response time, confidence, and response-derived fields
+  Observed excluded columns (pattern match): conf_radio.response, conf_radio.rt, resp.keys, resp.rt, vigilance_correct, vigilance_pressed
+
+Diagnostics written:
+  - EDA: eda_numeric_distributions.png, eda_numeric_correlation_heatmap.png
+  - Collinearity: vif_table.csv
+  - Heteroscedasticity (OLS surrogate): diagnostic_breusch_pagan.csv, diagnostic_ols_residuals_vs_fitted.png
+  - Logistic residual check: diagnostic_logistic_pearson_residuals.png
+
+Breusch–Pagan (OLS surrogate) summary: LM p=0.4517, F p=0.4577, R2=0.08301
+
+Model comparison (QIC; lower is better, when available):
+                 model         qic  stable                                                            description
+          M1_stim_main 5433.294786    True                                     Main effects; + stimulus duration.
+   M1_stim_interaction 5433.485411    True                                 Adds interaction; + stimulus duration.
+          M1_demo_main 5465.755561    True Main effects; design + demographics (age, gender, handedness, vision).
+   M1_demo_interaction 5465.949975    True                               Adds interaction; design + demographics.
+          M1_core_main 5492.052392    True                              Main effects; core design variables only.
+   M1_core_interaction 5492.241381    True  Adds condition × target_type interaction; core design variables only.
+M1_movieFE_interaction         NaN   False                               Adds interaction; + movie fixed effects.
+       M1_movieFE_main         NaN   False         Main effects; + demographics + duration + movie fixed effects.
+
+Best model used for predictions: M1_stim_main
+
+Odds ratios (best model):
+                                      term      coef       se    z_or_t        p       OR  OR_ci_low  OR_ci_high
+                                 Intercept  1.733272 0.598126  2.897837 0.003757 5.659141   1.752365   18.275803
+       C(condition, Treatment('NB'))[T.AB] -0.255153 0.096883 -2.633604 0.008448 0.774798   0.640798    0.936820
+     C(target_type, Treatment('BB'))[T.EM]  0.209665 0.066211  3.166646 0.001542 1.233265   1.083173    1.404155
+    C(gender, Treatment('Female'))[T.Male] -0.227931 0.115784 -1.968590 0.049000 0.796179   0.634535    0.999002
+             C(handedness)[T.Right handed]  0.333622 0.248990  1.339900 0.180278 1.396015   0.856938    2.274213
+                       C(vision)[T.Normal]  0.057571 0.094938  0.606407 0.544245 1.059260   0.879410    1.275892
+C(vision)[T.Uncorrected vision difficulty]  1.250716 0.394924  3.166979 0.001540 3.492842   1.610716    7.574235
+                                 is_repeat  0.415076 0.107991  3.843625 0.000121 1.514486   1.225585    1.871489
+                                       age -0.039259 0.023734 -1.654131 0.098101 0.961502   0.917799    1.007285
+                            movie_duration  0.022168 0.003400  6.520756 0.000000 1.022416   1.015626    1.029251

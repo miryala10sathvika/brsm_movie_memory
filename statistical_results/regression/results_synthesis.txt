@@ -1,0 +1,51 @@
+### 1) Model 3 Result (Participant-Level baseline: aggregated binomial GLM)
+This model predicts each participant’s overall accuracy (successes vs failures), using **Condition + Age + Gender**.
+
+- **Condition (NB vs AB):** NB significantly improves odds of overall accuracy vs AB  
+  - `condition_NB` OR = 1.299, p = 0.00018  
+  - Interpretation: NB has ~29.9% higher odds of correct responses than AB (equivalently, AB is worse).
+- **Gender (Male vs Female):** Male shows lower overall accuracy odds  
+  - OR = 0.786, p = 0.00543 (~21.4% lower odds).
+- **Age:** borderline / not clearly significant  
+  - OR = 0.966 per year, p = 0.061.
+
+Saved in: model3_participant_glm_odds_ratios.csv
+
+---
+
+### 2) Model 1 Result (Trial-Level clustered logistic regression: GEE; “new” expanded models)
+We fit a systematic family of GEE logistic models (clustered by participant), then selected the **best stable** model by QIC. The winner is:
+
+- **Best stable model:** `M1_stim_main` (lowest QIC among stable fits)  
+  - QIC table: model1_model_comparison_qic.csv
+
+Key scientific effects in `M1_stim_main` (odds of a correct trial):
+
+- **Condition (AB vs NB):** AB reduces accuracy odds  
+  - OR = 0.775, p = 0.00845 (≈22.5% lower odds), 95% CI [0.641, 0.937]
+- **Target Type (EM vs BB):** EM targets are remembered better than BB  
+  - OR = 1.233, p = 0.00154 (≈23.3% higher odds), 95% CI [1.083, 1.404]
+- **Repeat (is_repeat = 1 vs 0):** repeats are much easier  
+  - OR = 1.514, p = 0.000121 (≈51.4% higher odds), 95% CI [1.226, 1.871]
+- **Stimulus duration (movie_duration):** longer duration predicts higher accuracy odds  
+  - OR = 1.022 per 1-unit duration, p ≈ 7e-11, 95% CI [1.016, 1.029]
+- **Demographics:** Male is slightly lower (p = 0.049), age is not clearly significant (p = 0.098). Vision difficulty shows a large OR but should be interpreted cautiously (likely small subgroup).
+
+Saved OR table: M1_stim_main_odds_ratios.csv
+
+---
+
+### 3) Diagnostics (assignment-style checks)
+- **Multicollinearity (VIF):** all predictors have VIF ≈ 1.00–1.09 (no concerning collinearity)  
+  - vif_table.csv
+- **Heteroscedasticity (OLS surrogate on participant accuracy):** Breusch–Pagan not significant  
+  - LM p = 0.452, F p = 0.458  
+  - diagnostic_breusch_pagan.csv
+- **Residual plots saved:** logistic Pearson residuals + OLS residuals-vs-fitted  
+  - diagnostic_logistic_pearson_residuals.png  
+  - diagnostic_ols_residuals_vs_fitted.png
+
+---
+
+### Important note about “movie fixed effects” models
+The stimulus fixed-effects models (`M1_movieFE_*`) became numerically unstable (NaNs/overflows), so they’re flagged `stable=False` and excluded from “best model” selection.
