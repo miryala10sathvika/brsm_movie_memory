@@ -1,51 +1,41 @@
-### 1) Model 3 Result (Participant-Level baseline: aggregated binomial GLM)
-This model predicts each participant’s overall accuracy (successes vs failures), using **Condition + Age + Gender**.
+RESULTS SYNTHESIS (repeated movies excluded)
+========================================================================
 
-- **Condition (NB vs AB):** NB significantly improves odds of overall accuracy vs AB  
-  - `condition_NB` OR = 1.299, p = 0.00018  
-  - Interpretation: NB has ~29.9% higher odds of correct responses than AB (equivalently, AB is worse).
-- **Gender (Male vs Female):** Male shows lower overall accuracy odds  
-  - OR = 0.786, p = 0.00543 (~21.4% lower odds).
-- **Age:** borderline / not clearly significant  
-  - OR = 0.966 per year, p = 0.061.
+### Model 3 — Participant-level binomial GLM
 
-Saved in: model3_participant_glm_odds_ratios.csv
+  age: coef=-0.0347, p=0.06099, OR=0.9659
+  condition_NB: coef=0.2618, p=0.0001805, OR=1.2993
+  gender_Male: coef=-0.2406, p=0.005435, OR=0.7862
 
----
+### Model 1 — Best GEE model: M1_stim_interaction
 
-### 2) Model 1 Result (Trial-Level clustered logistic regression: GEE; “new” expanded models)
-We fit a systematic family of GEE logistic models (clustered by participant), then selected the **best stable** model by QIC. The winner is:
+  C(condition, Treatment('NB'))[T.AB]: OR=0.7167, p=0.005255, 95% CI [0.5672, 0.9056]
+  C(target_type, Treatment('BB'))[T.EM]: OR=1.2924, p=0.01125, 95% CI [1.0599, 1.5759]
+  C(gender, Treatment('Female'))[T.Male]: OR=0.7898, p=0.04507, 95% CI [0.6270, 0.9948]
+  C(handedness)[T.Right handed]: OR=1.3085, p=0.2811, 95% CI [0.8025, 2.1337]
+  C(vision)[T.Normal]: OR=1.0441, p=0.6542, 95% CI [0.8644, 1.2613]
+  C(vision)[T.Uncorrected vision difficulty]: OR=3.2238, p=0.003099, 95% CI [1.4842, 7.0024]
+  C(condition, Treatment('NB'))[T.AB]:C(target_type, Treatment('BB'))[T.EM]: OR=1.1220, p=0.4139, 95% CI [0.8513, 1.4789]
+  age: OR=0.9626, p=0.1028, 95% CI [0.9195, 1.0077]
+  movie_duration: OR=1.0180, p=2.906e-07, 95% CI [1.0111, 1.0249]
 
-- **Best stable model:** `M1_stim_main` (lowest QIC among stable fits)  
-  - QIC table: model1_model_comparison_qic.csv
+### GLMM (Variational Bayes) — Core model
 
-Key scientific effects in `M1_stim_main` (odds of a correct trial):
+Random participant intercept SD: 0.4203
+  C(condition, Treatment('NB'))[T.AB]: OR=0.7546, post_mean=-0.2816, post_SD=0.0511
+  C(target_type, Treatment('BB'))[T.EM]: OR=1.3674, post_mean=0.3129, post_SD=0.0562
 
-- **Condition (AB vs NB):** AB reduces accuracy odds  
-  - OR = 0.775, p = 0.00845 (≈22.5% lower odds), 95% CI [0.641, 0.937]
-- **Target Type (EM vs BB):** EM targets are remembered better than BB  
-  - OR = 1.233, p = 0.00154 (≈23.3% higher odds), 95% CI [1.083, 1.404]
-- **Repeat (is_repeat = 1 vs 0):** repeats are much easier  
-  - OR = 1.514, p = 0.000121 (≈51.4% higher odds), 95% CI [1.226, 1.871]
-- **Stimulus duration (movie_duration):** longer duration predicts higher accuracy odds  
-  - OR = 1.022 per 1-unit duration, p ≈ 7e-11, 95% CI [1.016, 1.029]
-- **Demographics:** Male is slightly lower (p = 0.049), age is not clearly significant (p = 0.098). Vision difficulty shows a large OR but should be interpreted cautiously (likely small subgroup).
+### GLMM Interaction note
 
-Saved OR table: M1_stim_main_odds_ratios.csv
-
----
-
-### 3) Diagnostics (assignment-style checks)
-- **Multicollinearity (VIF):** all predictors have VIF ≈ 1.00–1.09 (no concerning collinearity)  
-  - vif_table.csv
-- **Heteroscedasticity (OLS surrogate on participant accuracy):** Breusch–Pagan not significant  
-  - LM p = 0.452, F p = 0.458  
-  - diagnostic_breusch_pagan.csv
-- **Residual plots saved:** logistic Pearson residuals + OLS residuals-vs-fitted  
-  - diagnostic_logistic_pearson_residuals.png  
-  - diagnostic_ols_residuals_vs_fitted.png
-
----
-
-### Important note about “movie fixed effects” models
-The stimulus fixed-effects models (`M1_movieFE_*`) became numerically unstable (NaNs/overflows), so they’re flagged `stable=False` and excluded from “best model” selection.
+The interaction term C(condition)[T.AB]:C(target_type)[T.EM] captures
+whether the EM-vs-BB accuracy difference is the same in both conditions.
+  OR > 1: EM advantage is LARGER in AB than NB
+  OR < 1: EM advantage is SMALLER in AB (or BB advantage is larger in AB)
+  Simple effects:
+    Effect of condition for BB trials = main effect of condition only
+    Effect of condition for EM trials = main effect + interaction coefficient
+  Intercept: OR=6.2150
+  C(condition, Treatment('NB'))[T.AB]: OR=0.7198
+  C(target_type, Treatment('BB'))[T.EM]: OR=1.2918
+  C(condition, Treatment('NB'))[T.AB]:C(target_type, Treatment('BB'))[T.EM]: OR=1.1176
+  Random intercept SD: 0.4205

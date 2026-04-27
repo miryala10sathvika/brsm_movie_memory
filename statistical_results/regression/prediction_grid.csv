@@ -1,5 +1,5 @@
-condition,target_type,is_repeat,age,gender,handedness,vision,movie_duration,movie_id,stimulus_id
-NB,BB,0,22.13095238095238,Female,Right handed,Corrected to normal,33.44166666666667,1,NB_1
-NB,EM,0,22.13095238095238,Female,Right handed,Corrected to normal,33.44166666666667,1,NB_1
-AB,BB,0,22.13095238095238,Female,Right handed,Corrected to normal,33.44166666666667,1,AB_1
-AB,EM,0,22.13095238095238,Female,Right handed,Corrected to normal,33.44166666666667,1,AB_1
+condition,target_type,age,gender,handedness,vision,movie_duration,movie_id,stimulus_id
+NB,BB,22.13095238095238,Female,Right handed,Corrected to normal,33.39047619047619,1,NB_1
+NB,EM,22.13095238095238,Female,Right handed,Corrected to normal,33.39047619047619,1,NB_1
+AB,BB,22.13095238095238,Female,Right handed,Corrected to normal,33.39047619047619,1,AB_1
+AB,EM,22.13095238095238,Female,Right handed,Corrected to normal,33.39047619047619,1,AB_1

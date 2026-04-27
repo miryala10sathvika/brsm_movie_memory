@@ -4,57 +4,64 @@
       "sub105_AB",
       "sub70_NB"
     ],
-    "n_excluded": 2,
+    "repeated_video_ids_excluded": [
+      3,
+      7,
+      18,
+      28,
+      37
+    ],
+    "n_excluded_vigilance": 2,
     "n_analysed": 168,
-    "n_trials": 6720
+    "n_trials": 5880
   },
   "_rt_normality_diagnostics": {
     "pp_raw_NB": {
       "n": 88,
-      "mean": 5.81557333829493,
-      "sd": 1.672383805172261,
-      "shapiro_W": 0.9024838504134087,
-      "shapiro_p": 6.4813156082173656e-06,
+      "mean": 5.883070626687958,
+      "sd": 1.6983299487615742,
+      "shapiro_W": 0.900338573193396,
+      "shapiro_p": 5.200388633464756e-06,
       "normal_alpha05": false
     },
     "pp_log_NB": {
       "n": 88,
-      "mean": 1.611264267540622,
-      "sd": 0.23740238930409926,
-      "shapiro_W": 0.9879341037716665,
-      "shapiro_p": 0.5957204741034674,
+      "mean": 1.6257216603814586,
+      "sd": 0.2405228358080692,
+      "shapiro_W": 0.9865672051617623,
+      "shapiro_p": 0.5023500976607793,
       "normal_alpha05": true
     },
     "pp_raw_AB": {
       "n": 80,
-      "mean": 5.568592178937378,
-      "sd": 1.4762320972340575,
-      "shapiro_W": 0.8977532569039799,
-      "shapiro_p": 9.801413350550414e-06,
+      "mean": 5.707528024392666,
+      "sd": 1.5339561007903801,
+      "shapiro_W": 0.8897020585551926,
+      "shapiro_p": 4.594129228643525e-06,
       "normal_alpha05": false
     },
     "pp_log_AB": {
       "n": 80,
-      "mean": 1.57160094008699,
-      "sd": 0.22396617885317754,
-      "shapiro_W": 0.9712846379833274,
-      "shapiro_p": 0.06853782206385499,
+      "mean": 1.595301291141522,
+      "sd": 0.2250469775544585,
+      "shapiro_W": 0.9718565429897471,
+      "shapiro_p": 0.07455381524953639,
       "normal_alpha05": true
     },
     "trial_sampled": true,
     "trial_raw": {
       "n_used_for_shapiro": 5000,
-      "shapiro_W": 0.7245344092235998,
-      "shapiro_p": 8.655610682400652e-68,
-      "skew": 3.8293805069991245,
-      "kurtosis": 31.55955749940437
+      "shapiro_W": 0.7322969459437696,
+      "shapiro_p": 3.1865890621440325e-67,
+      "skew": 3.8533031433815474,
+      "kurtosis": 32.503817836134026
     },
     "trial_log": {
       "n_used_for_shapiro": 5000,
-      "shapiro_W": 0.9785094142136387,
-      "shapiro_p": 7.467047992176705e-27,
-      "skew": 0.6177287644914563,
-      "kurtosis": 0.6322992763139581
+      "shapiro_W": 0.9785560794164334,
+      "shapiro_p": 7.939388835482755e-27,
+      "skew": 0.5877208253861714,
+      "kurtosis": 0.628440442087792
     },
     "plot_paths": {
       "participant_level": "statistical_results/rt_normality_participant_level.png",
@@ -64,563 +71,522 @@
   "_h6_plot_path": "statistical_results/h6_bb_em_logrt.png",
   "H1": {
     "label": "H1",
-    "dv": "Overall accuracy (proportion correct)",
+    "dv": "Overall accuracy (proportion correct, repeated movies excluded)",
     "group1": "NB",
     "group2": "AB",
     "descriptives": {
       "NB": {
         "n": 88,
-        "mean": 0.8710227272727273,
-        "sd": 0.07250508936123785,
-        "median": 0.875,
-        "q1": 0.825,
-        "q3": 0.925,
-        "min": 0.65,
+        "mean": 0.8672077922077922,
+        "sd": 0.07516216235148272,
+        "median": 0.8857142857142857,
+        "q1": 0.8285714285714286,
+        "q3": 0.9214285714285714,
+        "min": 0.6285714285714286,
         "max": 1.0
       },
       "AB": {
         "n": 80,
-        "mean": 0.840625,
-        "sd": 0.0819438484805142,
-        "median": 0.85,
-        "q1": 0.7937500000000001,
-        "q3": 0.9,
-        "min": 0.575,
-        "max": 0.975
+        "mean": 0.8321428571428573,
+        "sd": 0.08423988087808477,
+        "median": 0.8285714285714286,
+        "q1": 0.7714285714285715,
+        "q3": 0.8857142857142857,
+        "min": 0.5714285714285714,
+        "max": 1.0
       }
     },
     "normality": {
       "NB": {
-        "shapiro_W": 0.9409991664463088,
-        "p": 0.0005691445654141198
+        "shapiro_W": 0.9527512035950689,
+        "p": 0.0028494929122708443
       },
       "AB": {
-        "shapiro_W": 0.9515778084454329,
-        "p": 0.004248261335339698
+        "shapiro_W": 0.9665514246026541,
+        "p": 0.034297308471659446
       },
       "both_normal": false
     },
     "levene": {
-      "W": 0.9113205279383072,
-      "p": 0.34115237140151344,
+      "W": 0.7739580107293376,
+      "p": 0.3802671783002123,
       "equal_var": true
     },
     "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
     "statistic_name": "U",
-    "statistic": 4297.0,
-    "z_approx": 2.467640900489948,
+    "statistic": 4384.5,
+    "z_approx": 2.7455283892838613,
     "df": null,
-    "p_two_sided": 0.01301572566786952,
-    "p_one_sided": 0.00650786283393476,
+    "p_two_sided": 0.005732715250154705,
+    "p_one_sided": 0.0028663576250773527,
     "predicted_direction": "NB > AB",
     "observed_direction_matches": true,
     "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.22073863636363633
+    "effect_size_value": 0.24559659090909092,
+    "n_ties": 164,
+    "n_tied_groups": 12,
+    "n_unique_vals": 16,
+    "n_total": 168,
+    "tie_correction": 0.9864725325342553
   },
   "H2": {
     "label": "H2",
-    "dv": "Before-Boundary accuracy (proportion correct)",
+    "dv": "Before-Boundary accuracy (repeated movies excluded)",
     "group1": "NB",
     "group2": "AB",
     "descriptives": {
       "NB": {
         "n": 88,
-        "mean": 0.859659090909091,
-        "sd": 0.09674529735384348,
-        "median": 0.9,
-        "q1": 0.8,
-        "q3": 0.95,
-        "min": 0.6,
+        "mean": 0.8535353535353536,
+        "sd": 0.10008575086762385,
+        "median": 0.8888888888888888,
+        "q1": 0.7777777777777778,
+        "q3": 0.9444444444444444,
+        "min": 0.5555555555555556,
         "max": 1.0
       },
       "AB": {
         "n": 80,
-        "mean": 0.8256249999999999,
-        "sd": 0.10433446400756959,
-        "median": 0.85,
-        "q1": 0.75,
-        "q3": 0.9,
-        "min": 0.45,
+        "mean": 0.8083333333333333,
+        "sd": 0.11521940721388281,
+        "median": 0.8333333333333334,
+        "q1": 0.7222222222222222,
+        "q3": 0.8888888888888888,
+        "min": 0.3888888888888889,
         "max": 1.0
       }
     },
     "normality": {
       "NB": {
-        "shapiro_W": 0.918114351391102,
-        "p": 3.505373488815838e-05
+        "shapiro_W": 0.9288754572582625,
+        "p": 0.00012339544451098658
       },
       "AB": {
-        "shapiro_W": 0.9436179142567604,
-        "p": 0.0015127034362358996
+        "shapiro_W": 0.9402162573448088,
+        "p": 0.0009890393332661973
       },
       "both_normal": false
     },
     "levene": {
-      "W": 0.1174317727064355,
-      "p": 0.7322703412726356,
+      "W": 0.6365040750438377,
+      "p": 0.4261193517650904,
       "equal_var": true
     },
     "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
     "statistic_name": "U",
-    "statistic": 4249.0,
-    "z_approx": 2.3151997637801447,
+    "statistic": 4370.0,
+    "z_approx": 2.6994784625694415,
     "df": null,
-    "p_two_sided": 0.01904104249206833,
-    "p_one_sided": 0.009520521246034166,
+    "p_two_sided": 0.006233988956399518,
+    "p_one_sided": 0.003116994478199759,
     "predicted_direction": "NB > AB",
     "observed_direction_matches": true,
     "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.20710227272727266
+    "effect_size_value": 0.2414772727272727,
+    "n_ties": 166,
+    "n_tied_groups": 9,
+    "n_unique_vals": 11,
+    "n_total": 168,
+    "tie_correction": 0.9728957132227515
   },
   "H3": {
     "label": "H3",
-    "dv": "Mean confidence (1-5 Likert)",
+    "dv": "Mean confidence (1-5 Likert, repeated movies excluded)",
     "group1": "NB",
     "group2": "AB",
     "descriptives": {
       "NB": {
         "n": 88,
-        "mean": 4.2065340909090905,
-        "sd": 0.41237144144691096,
-        "median": 4.275,
-        "q1": 3.96875,
-        "q3": 4.5125,
-        "min": 3.0,
+        "mean": 4.176623376623376,
+        "sd": 0.42161948762393936,
+        "median": 4.242857142857143,
+        "q1": 3.907142857142857,
+        "q3": 4.521428571428571,
+        "min": 2.9714285714285715,
         "max": 5.0
       },
       "AB": {
         "n": 80,
-        "mean": 4.086875000000001,
-        "sd": 0.4567007267319249,
-        "median": 4.1,
-        "q1": 3.7,
-        "q3": 4.43125,
-        "min": 2.9,
-        "max": 4.9
+        "mean": 4.04,
+        "sd": 0.4763288527094847,
+        "median": 4.042857142857143,
+        "q1": 3.65,
+        "q3": 4.4071428571428575,
+        "min": 2.8285714285714287,
+        "max": 4.885714285714286
       }
     },
     "normality": {
       "NB": {
-        "shapiro_W": 0.9695940029321449,
-        "p": 0.036434091338186377
+        "shapiro_W": 0.9686238153097744,
+        "p": 0.03124215010574257
       },
       "AB": {
-        "shapiro_W": 0.9760026622305805,
-        "p": 0.13708908306951267
+        "shapiro_W": 0.9770919145663529,
+        "p": 0.16066991760322172
       },
       "both_normal": false
     },
     "levene": {
-      "W": 2.0955743087274086,
-      "p": 0.14961213788620992,
+      "W": 2.4276119858875544,
+      "p": 0.12111884193000388,
       "equal_var": true
     },
     "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
     "statistic_name": "U",
-    "statistic": 4050.5,
-    "z_approx": 1.6847921463448103,
+    "statistic": 4097.5,
+    "z_approx": 1.8340574260398266,
     "df": null,
-    "p_two_sided": 0.09225209400493359,
-    "p_one_sided": 0.046126047002466794,
+    "p_two_sided": 0.06680453062590364,
+    "p_one_sided": 0.03340226531295182,
     "predicted_direction": "NB > AB",
     "observed_direction_matches": true,
     "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.1507102272727272
+    "effect_size_value": 0.1640625,
+    "n_ties": 156,
+    "n_tied_groups": 46,
+    "n_unique_vals": 58,
+    "n_total": 168,
+    "tie_correction": 0.9994356173536275
   },
   "H4": {
     "label": "H4",
-    "dv": "Proportion of low-confidence trials (conf<=3)",
+    "dv": "Proportion of low-confidence trials (conf<=3, repeated excluded)",
     "group1": "AB",
     "group2": "NB",
     "descriptives": {
       "AB": {
         "n": 80,
-        "mean": 0.2628125,
-        "sd": 0.14663923644290078,
-        "median": 0.2625,
-        "q1": 0.15,
-        "q3": 0.375,
+        "mean": 0.27749999999999997,
+        "sd": 0.15310064936154377,
+        "median": 0.2857142857142857,
+        "q1": 0.16428571428571428,
+        "q3": 0.4,
         "min": 0.0,
-        "max": 0.65
+        "max": 0.6571428571428571
       },
       "NB": {
         "n": 88,
-        "mean": 0.23323863636363634,
-        "sd": 0.127403422455174,
-        "median": 0.225,
-        "q1": 0.14375,
-        "q3": 0.3,
+        "mean": 0.24285714285714285,
+        "sd": 0.13153847050787648,
+        "median": 0.22857142857142856,
+        "q1": 0.14285714285714285,
+        "q3": 0.34285714285714286,
         "min": 0.0,
-        "max": 0.625
+        "max": 0.6285714285714286
       }
     },
     "normality": {
       "AB": {
-        "shapiro_W": 0.9766632774955571,
-        "p": 0.15095937382089558
+        "shapiro_W": 0.9762944078549574,
+        "p": 0.14305593673116695
       },
       "NB": {
-        "shapiro_W": 0.9709593754543384,
-        "p": 0.04528008031649761
+        "shapiro_W": 0.973772833558213,
+        "p": 0.07105395710853867
       },
-      "both_normal": false
+      "both_normal": true
     },
     "levene": {
-      "W": 2.976884922869304,
-      "p": 0.0863226719644408,
+      "W": 2.86931518125707,
+      "p": 0.0921587370757885,
       "equal_var": true
     },
-    "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
-    "statistic_name": "U",
-    "statistic": 3918.5,
-    "z_approx": 1.26557902039285,
-    "df": null,
-    "p_two_sided": 0.20534213451093486,
-    "p_one_sided": 0.10267106725546743,
+    "test_used": "Student's independent-samples t-test",
+    "statistic_name": "t",
+    "statistic": 1.5769592277646987,
+    "z_approx": null,
+    "df": 166.0,
+    "p_two_sided": 0.11670869911397487,
+    "p_one_sided": 0.058354349556987435,
     "predicted_direction": "AB > NB",
     "observed_direction_matches": true,
-    "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.11321022727272734
+    "effect_size_name": "Cohen's d (pooled)",
+    "effect_size_value": 0.24360644613494228,
+    "effect_size_hedges_g": 0.24250415452347196
   },
   "H5": {
     "label": "H5",
-    "dv": "SD of per-movie accuracy (movie-level variability)",
+    "dv": "SD of per-movie accuracy (repeated movies excluded)",
     "group1": "AB",
     "group2": "NB",
     "descriptives": {
       "AB": {
         "n": 80,
-        "mean": 0.3526615998344081,
-        "sd": 0.07948422571765006,
-        "median": 0.36162028533978946,
-        "q1": 0.3038218101251,
-        "q3": 0.40954732556666507,
-        "min": 0.15811388300841897,
-        "max": 0.5006406152531232
+        "mean": 0.359721220891982,
+        "sd": 0.08524736005909975,
+        "median": 0.3823852604310971,
+        "q1": 0.32280285109067564,
+        "q3": 0.4260429614980358,
+        "min": 0.0,
+        "max": 0.5020964452534338
       },
       "NB": {
         "n": 88,
-        "mean": 0.3202680285772281,
-        "sd": 0.08605071541130206,
-        "median": 0.3349320635285418,
-        "q1": 0.26674678283691855,
-        "q3": 0.38480764425479264,
+        "mean": 0.32394401905668785,
+        "sd": 0.08914371721205402,
+        "median": 0.32280285109067564,
+        "q1": 0.27189750774321864,
+        "q3": 0.38238526043109716,
         "min": 0.0,
-        "max": 0.48304589153964783
+        "max": 0.4902408943099112
       }
     },
     "normality": {
       "AB": {
-        "shapiro_W": 0.9551313691669687,
-        "p": 0.006856962430512726
+        "shapiro_W": 0.9208486020106126,
+        "p": 0.00010429122068573082
       },
       "NB": {
-        "shapiro_W": 0.9536039488859327,
-        "p": 0.0032199765969317825
+        "shapiro_W": 0.9492072672221525,
+        "p": 0.001728185185388053
       },
       "both_normal": false
     },
     "levene": {
-      "W": 0.2369112881322574,
-      "p": 0.6270879319014606,
+      "W": 0.40271391121257544,
+      "p": 0.5265646261832746,
       "equal_var": true
     },
     "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
     "statistic_name": "U",
-    "statistic": 4337.0,
-    "z_approx": 2.5946751810814517,
+    "statistic": 4428.0,
+    "z_approx": 2.8836781694271214,
     "df": null,
-    "p_two_sided": 0.009348746492293891,
-    "p_one_sided": 0.004674373246146946,
+    "p_two_sided": 0.0038900574385124435,
+    "p_one_sided": 0.0019450287192562218,
     "predicted_direction": "AB > NB",
     "observed_direction_matches": true,
     "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.2321022727272728
+    "effect_size_value": 0.25795454545454555,
+    "n_ties": 164,
+    "n_tied_groups": 12,
+    "n_unique_vals": 16,
+    "n_total": 168,
+    "tie_correction": 0.9864725325342553
   },
   "H6": {
     "label": "H6",
-    "dv": "BB vs EM mean log RT (within-participant paired comparison)",
+    "dv": "BB vs EM mean log RT (within-participant paired, repeated excluded)",
     "group1": "BB",
     "group2": "EM",
     "n_pairs": 168,
     "descriptives": {
       "BB": {
         "n": 168,
-        "mean": 1.6098576926490065,
-        "sd": 0.23952513344498896,
-        "median": 1.5818907733830616,
-        "q1": 1.4733546526338888,
-        "q3": 1.7349162109345624,
-        "min": 1.0476752040461565,
-        "max": 2.2888152399271364
+        "mean": 1.6347739267352501,
+        "sd": 0.2430226187937168,
+        "median": 1.6154193734220264,
+        "q1": 1.4905668349395622,
+        "q3": 1.7556262547325452,
+        "min": 1.0454190074621001,
+        "max": 2.339710806763684
       },
       "EM": {
         "n": 168,
-        "mean": 1.5748962448573494,
-        "sd": 0.24206909045747266,
-        "median": 1.5834439421443296,
-        "q1": 1.4130187436209676,
-        "q3": 1.7090129960334315,
-        "min": 1.0078042042878905,
-        "max": 2.224308088306926
+        "mean": 1.586313016359859,
+        "sd": 0.24600581060876156,
+        "median": 1.5959788348513704,
+        "q1": 1.4157114894223874,
+        "q3": 1.740587032268677,
+        "min": 1.0292093506383466,
+        "max": 2.289630931693436
       },
       "difference": {
         "n": 168,
-        "mean": 0.034961447791657385,
-        "sd": 0.13416686137938882,
-        "median": 0.037001139740618694,
-        "q1": -0.05616381759098987,
-        "q3": 0.13329868965092673,
-        "min": -0.3279625573367313,
-        "max": 0.35455775467026873
+        "mean": 0.048460910375391276,
+        "sd": 0.14757234530311347,
+        "median": 0.05357868698200852,
+        "q1": -0.04504997489240142,
+        "q3": 0.16023210847790192,
+        "min": -0.32871248444451484,
+        "max": 0.4261983947128136
       }
     },
     "normality_of_diffs": {
-      "shapiro_W": 0.9924723839613467,
-      "p": 0.5318857448414176,
+      "shapiro_W": 0.9932340903977102,
+      "p": 0.6267632448313436,
       "normal": true
     },
     "test_used": "One-sample t-test on differences (paired, two-tailed)",
     "statistic_name": "t",
-    "statistic": 3.377526689514748,
+    "statistic": 4.25638819396154,
     "df": 167.0,
-    "p_two_sided": 0.0009100704231048304,
+    "p_two_sided": 3.456063050505988e-05,
     "effect_size_name": "Cohen's d_z",
-    "effect_size_value": 0.26058184138924995
+    "effect_size_value": 0.32838747853368194
+  },
+  "H7": {
+    "label": "H7",
+    "dv_x": "Mean log RT (ln s)",
+    "dv_y": "Overall accuracy (proportion correct, repeated excluded)",
+    "type": "spearman_correlation",
+    "n": 168,
+    "rho": -0.036028400717405276,
+    "p_two_sided": 0.6429017451518586,
+    "ci_95_lo": -0.19637892733081136,
+    "ci_95_hi": 0.11643857161584543,
+    "n_boot": 5000,
+    "normality": {
+      "x": {
+        "shapiro_W": 0.9817526868184944,
+        "p": 0.02623936964830194
+      },
+      "y": {
+        "shapiro_W": 0.96005867976662,
+        "p": 9.739775460004634e-05
+      }
+    }
+  },
+  "H8": {
+    "label": "H8",
+    "dv_x": "Mean log RT (ln s)",
+    "dv_y": "Mean confidence rating (1\u20135, repeated excluded)",
+    "type": "spearman_correlation",
+    "n": 168,
+    "rho": -0.16349186305884844,
+    "p_two_sided": 0.034213643466496975,
+    "ci_95_lo": -0.3127689434605253,
+    "ci_95_hi": -0.005257671840057879,
+    "n_boot": 5000,
+    "normality": {
+      "x": {
+        "shapiro_W": 0.9817526868184944,
+        "p": 0.02623936964830194
+      },
+      "y": {
+        "shapiro_W": 0.976089648947216,
+        "p": 0.005300617179675646
+      }
+    }
   },
   "Secondary_RT": {
     "label": "Secondary_RT",
-    "dv": "Participant-level mean log response time (ln seconds)",
+    "dv": "Participant-level mean log response time (ln s, repeated excluded)",
     "group1": "NB",
     "group2": "AB",
     "descriptives": {
       "NB": {
         "n": 88,
-        "mean": 1.611264267540622,
-        "sd": 0.23740238930409926,
-        "median": 1.5981187014325797,
-        "q1": 1.4734320522719586,
-        "q3": 1.7358135965562353,
-        "min": 1.039023034621008,
-        "max": 2.2354323781052674
+        "mean": 1.6257216603814586,
+        "sd": 0.2405228358080692,
+        "median": 1.6178358569984195,
+        "q1": 1.4844866371695888,
+        "q3": 1.7617056216796887,
+        "min": 1.0532234440226542,
+        "max": 2.273713463883813
       },
       "AB": {
         "n": 80,
-        "mean": 1.57160094008699,
-        "sd": 0.22396617885317754,
-        "median": 1.5605126073364248,
-        "q1": 1.4386598804220325,
-        "q3": 1.6857082706607116,
-        "min": 1.0730907568773056,
-        "max": 2.1816059191909947
+        "mean": 1.595301291141522,
+        "sd": 0.2250469775544585,
+        "median": 1.5878610902356778,
+        "q1": 1.4550695414525456,
+        "q3": 1.714403264191633,
+        "min": 1.1063417377312486,
+        "max": 2.22007554773217
       }
     },
     "normality": {
       "NB": {
-        "shapiro_W": 0.9879341037716665,
-        "p": 0.5957204741034674
+        "shapiro_W": 0.9865672051617623,
+        "p": 0.5023500976607793
       },
       "AB": {
-        "shapiro_W": 0.9712846379833274,
-        "p": 0.06853782206385499
+        "shapiro_W": 0.9718565429897471,
+        "p": 0.07455381524953639
       },
       "both_normal": true
     },
     "levene": {
-      "W": 0.20723706624466137,
-      "p": 0.6495364839072522,
+      "W": 0.2698109766988664,
+      "p": 0.6041504903324211,
       "equal_var": true
     },
     "test_used": "Student's independent-samples t-test",
     "statistic_name": "t",
-    "statistic": 1.11099109016591,
+    "statistic": 0.8441268292939529,
     "z_approx": null,
     "df": 166.0,
-    "p_two_sided": 0.2681787766243361,
-    "p_one_sided": 0.8659106116878319,
+    "p_two_sided": 0.3998133746874507,
+    "p_one_sided": 0.8000933126562746,
     "predicted_direction": "NB < AB",
     "observed_direction_matches": false,
     "effect_size_name": "Cohen's d (pooled)",
-    "effect_size_value": 0.17162434284780756,
-    "effect_size_hedges_g": 0.17084776211093966
+    "effect_size_value": 0.13039952672900693,
+    "effect_size_hedges_g": 0.12980948362163586
   },
   "Secondary_EM": {
     "label": "Secondary_EM",
-    "dv": "Event-middle accuracy (proportion correct)",
+    "dv": "Event-middle accuracy (repeated excluded)",
     "group1": "NB",
     "group2": "AB",
     "descriptives": {
       "NB": {
         "n": 88,
-        "mean": 0.8823863636363637,
-        "sd": 0.07879836508867336,
-        "median": 0.9,
-        "q1": 0.85,
-        "q3": 0.95,
-        "min": 0.6,
+        "mean": 0.8816844919786097,
+        "sd": 0.0848432128913078,
+        "median": 0.8823529411764706,
+        "q1": 0.8235294117647058,
+        "q3": 0.9411764705882353,
+        "min": 0.6470588235294118,
         "max": 1.0
       },
       "AB": {
         "n": 80,
-        "mean": 0.8556249999999999,
-        "sd": 0.09209026598184844,
-        "median": 0.85,
-        "q1": 0.8,
-        "q3": 0.95,
-        "min": 0.5,
+        "mean": 0.8573529411764704,
+        "sd": 0.09111700316120029,
+        "median": 0.8823529411764706,
+        "q1": 0.8235294117647058,
+        "q3": 0.9411764705882353,
+        "min": 0.5294117647058824,
         "max": 1.0
       }
     },
     "normality": {
       "NB": {
-        "shapiro_W": 0.9195866927990499,
-        "p": 4.143355431786391e-05
+        "shapiro_W": 0.915563096878014,
+        "p": 2.6329126564667907e-05
       },
       "AB": {
-        "shapiro_W": 0.9240519168192415,
-        "p": 0.00014851935845172916
+        "shapiro_W": 0.9304345174698228,
+        "p": 0.0003067991645058097
       },
       "both_normal": false
     },
     "levene": {
-      "W": 2.0215076708673028,
-      "p": 0.15696119116849205,
+      "W": 0.7313068204573677,
+      "p": 0.3936924963930276,
       "equal_var": true
     },
     "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
     "statistic_name": "U",
-    "statistic": 4133.5,
-    "z_approx": 1.9483882785721793,
+    "statistic": 4080.5,
+    "z_approx": 1.7800678567884378,
     "df": null,
-    "p_two_sided": 0.04744253764159757,
-    "p_one_sided": 0.023721268820798783,
+    "p_two_sided": 0.06909307783513563,
+    "p_one_sided": 0.034546538917567815,
     "predicted_direction": "NB > AB",
     "observed_direction_matches": true,
     "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.17428977272727275
-  },
-  "Secondary_Interaction": {
-    "label": "Secondary_Interaction",
-    "dv": "Interaction contrast: accuracy_BB - accuracy_EM (BB advantage)",
-    "group1": "NB",
-    "group2": "AB",
-    "descriptives": {
-      "NB": {
-        "n": 88,
-        "mean": -0.02272727272727272,
-        "sd": 0.10054709278909338,
-        "median": 0.0,
-        "q1": -0.09999999999999998,
-        "q3": 0.04999999999999993,
-        "min": -0.30000000000000004,
-        "max": 0.25
-      },
-      "AB": {
-        "n": 80,
-        "mean": -0.029999999999999992,
-        "sd": 0.10896521335508404,
-        "median": 0.0,
-        "q1": -0.09999999999999998,
-        "q3": 0.04999999999999996,
-        "min": -0.35,
-        "max": 0.19999999999999996
-      }
-    },
-    "normality": {
-      "NB": {
-        "shapiro_W": 0.9657478796706161,
-        "p": 0.019889990657030517
-      },
-      "AB": {
-        "shapiro_W": 0.9641678311602935,
-        "p": 0.02431001316262941
-      },
-      "both_normal": false
-    },
-    "levene": {
-      "W": 0.6453126617364605,
-      "p": 0.4229422727690372,
-      "equal_var": true
-    },
-    "test_used": "Mann-Whitney U test (two-sided, continuity-corrected)",
-    "statistic_name": "U",
-    "statistic": 3546.0,
-    "z_approx": 0.08257228238447704,
-    "df": null,
-    "p_two_sided": 0.9349081326400139,
-    "p_one_sided": 0.46745406632000697,
-    "predicted_direction": "NB > AB",
-    "observed_direction_matches": true,
-    "effect_size_name": "Rank-biserial r",
-    "effect_size_value": 0.00738636363636358
-  },
-  "Secondary_Interaction_Conf": {
-    "label": "Secondary_Interaction_Conf",
-    "dv": "Interaction contrast: Conf_BB - Conf_EM (BB confidence advantage)",
-    "group1": "NB",
-    "group2": "AB",
-    "descriptives": {
-      "NB": {
-        "n": 88,
-        "mean": -0.010795454545454592,
-        "sd": 0.2646238779111034,
-        "median": 0.02499999999999991,
-        "q1": -0.1625000000000003,
-        "q3": 0.15000000000000036,
-        "min": -0.6999999999999997,
-        "max": 0.6000000000000001
-      },
-      "AB": {
-        "n": 80,
-        "mean": -0.09250000000000005,
-        "sd": 0.26482619091095394,
-        "median": -0.09999999999999987,
-        "q1": -0.21250000000000013,
-        "q3": 0.04999999999999982,
-        "min": -0.9499999999999997,
-        "max": 0.5
-      }
-    },
-    "normality": {
-      "NB": {
-        "shapiro_W": 0.9830804779661394,
-        "p": 0.30767759482169543
-      },
-      "AB": {
-        "shapiro_W": 0.9801052134531203,
-        "p": 0.24740038061187886
-      },
-      "both_normal": true
-    },
-    "levene": {
-      "W": 0.05653233271723831,
-      "p": 0.8123563554385368,
-      "equal_var": true
-    },
-    "test_used": "Student's independent-samples t-test",
-    "statistic_name": "t",
-    "statistic": 1.997978725987298,
-    "z_approx": null,
-    "df": 166.0,
-    "p_two_sided": 0.04735201084435204,
-    "p_one_sided": 0.02367600542217602,
-    "predicted_direction": "NB > AB",
-    "observed_direction_matches": true,
-    "effect_size_name": "Cohen's d (pooled)",
-    "effect_size_value": 0.30864494675674004,
-    "effect_size_hedges_g": 0.3072483632872525
+    "effect_size_value": 0.1592329545454545,
+    "n_ties": 167,
+    "n_tied_groups": 7,
+    "n_unique_vals": 8,
+    "n_total": 168,
+    "tie_correction": 0.9571954991116668
   },
   "Secondary_RT_trial_level": {
     "label": "Secondary_RT_trial",
-    "dv": "Trial-level log response time (ln seconds)",
-    "n_NB": 3520,
-    "n_AB": 3200,
-    "mean_log_rt_NB": 1.611264267540622,
-    "mean_log_rt_AB": 1.57160094008699,
-    "welch_t": 3.164386689542207,
-    "welch_p_two_sided": 0.0015610851572580196,
-    "mann_whitney_U": 5888517.0,
-    "mann_whitney_p_two_sided": 0.0012398311196020982,
-    "rank_biserial": 0.045546342329545464
+    "dv": "Trial-level log response time (ln s, repeated excluded)",
+    "n_NB": 3080,
+    "n_AB": 2800,
+    "mean_log_rt_NB": 1.6257216603814588,
+    "mean_log_rt_AB": 1.5953012911415223,
+    "welch_t": 2.2720369367232647,
+    "welch_p_two_sided": 0.023120574570735953,
+    "mann_whitney_U": 4469782.0,
+    "mann_whitney_p_two_sided": 0.015224967932041393,
+    "rank_biserial": 0.03659137291280157
   }
 }

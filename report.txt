@@ -1,0 +1,485 @@
+BRSM Movie Memory Experiment
+Comprehensive Statistical Report
+After Vigilance-Based Participant Exclusions
+RSS Team
+April 2026
+Contents
+1 Overview and Data Quality 3
+1.1 Vigilance-based exclusions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.2 Sample and trial structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+2 Statistical Methods 3
+2.1 Accuracy dependent variable . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+2.2 Log-transformation and normality of response time . . . . . . . . . . . . . . . . . 4
+3 H1: Overall Recognition Accuracy 5
+3.1 3.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+3.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+4 H2: Before-Boundary Frame Accuracy 6
+4.1 4.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+5 H3: Mean Confidence Rating 6
+5.1 5.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+5.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+6 H4: Proportion of Low-Confidence Trials 7
+6.1 6.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+6.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+7 H5: Per-Movie Accuracy Variability 7
+7.1 7.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+8 H6: BB-Frame vs EM-Frame Response Time 8
+8.1 8.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+8.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+1
+9 H7: Mean log RT (ln s) vs Overall accuracy (proportion correct) 9
+9.1 9.2 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+9.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+10 H8: Mean log RT (ln s) vs Mean confidence rating (1–5) 10.1 Hypotheses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10.2 DV and descriptive statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10.3 Test selection and result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+10
+10
+10
+11 Regression Analysis 11
+11.1 Overview and Feature Policy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11.2 Model 3: Participant-Level Binomial GLM . . . . . . . . . . . . . . . . . . . . . . 11.3 Model 1: Trial-Level GEE Logistic Regression . . . . . . . . . . . . . . . . . . . . 11.4 Best Model: M1_stim_main Odds Ratios . . . . . . . . . . . . . . . . . . . . . . . 11.5 Diagnostics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11.5.1 Collinearity (VIF) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11.5.2 Heteroscedasticity (Breusch–Pagan, OLS surrogate) . . . . . . . . . . . . 11.6 Mixed-Effects Logistic Regression (GLMM) . . . . . . . . . . . . . . . . . . . . . 11.6.1 Rationale and Model Specification . . . . . . . . . . . . . . . . . . . . . . 11.6.2 Fixed Effects . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11.6.3 Random Effects . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11.6.4 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+11
+12
+12
+13
+13
+14
+16
+16
+17
+17
+18
+2
+1 Overview and Data Quality
+1.1 Vigilance-based exclusions
+Two participants failed the embedded vigilance check and are excluded from every analysis:
+• sub105_AB
+• sub70_NB
+The retained analytical sample is N=168 (NB=88, AB=80), contributing 6,720 recognition
+trials.
+1.2 Sample and trial structure
+Table 1: Analytical sample after vigilance exclusions.
+Condition n participants n trials BB trials EM trials
+NB (Natural Boundary) 88 3,520 1,760 1,760
+AB (Abrupt Boundary) 80 3,200 1,600 1,600
+Total 168 6,720 3,360 3,360
+2 Statistical Methods
+Each hypothesis follows an identical pre-specified decision pipeline:
+1. Build the DV at the participant level from trial-level data.
+2. Compute full descriptive statistics (n, M, SD, Mdn, Q1, Q3, min, max) per group.
+3. Test normality within each group using Shapiro–Wilk.
+4. Test variance homogeneity using Levene’s test, median-centred (= Brown–Forsythe).
+5. Select the test:
+• Both groups normal and equal variance ⇒Student’s t-test
+• Both groups normal and unequal variance ⇒Welch’s t-test
+• Either group non-normal ⇒Mann–Whitney U test (two-sided)
+6. Report effect sizes: Cohen’s d / Hedges’ g for parametric tests; rank-biserial r for non-
+parametric tests.
+7. No correction for multiple comparisons is applied. All reported p-values are raw.
+2.1 Accuracy dependent variable
+All accuracy-based DVs use raw proportion correct (range 0–1). Chance performance is 0.5
+in a two-alternative forced-choice task.
+3
+2.2 Log-transformation and normality of response time
+Trial-level RTs are strongly right-skewed (skew ≈3.83, excess kurtosis ≈29). All RT analyses
+therefore use natural-log-transformed RT (ln seconds). Table 2 and Figures 1 and 2 verify
+that the transform rescues approximate normality at the participant level.
+Table 2: Shapiro–Wilk normality: raw RT vs. log RT at participant level.
+Condition Transform n M Shapiro–Wilk p
+NB Raw RT (s) 88 5.816 s <.001 (non-normal)
+Log RT (ln s) 88 1.611 .5957 (normal)
+AB Raw RT (s) 80 5.569 s <.001 (non-normal)
+Log RT (ln s) 80 1.572 .0685 (normal)
+All (trial) Raw RT 5,000 sample skew=3.829 <.001
+Log RT 5,000 sample skew=0.618 <.001
+Note. At the trial level (n ≈6720) Shapiro–Wilk has extreme power and flags even trivial
+departures from normality. The skew drops from ≈3.83 (raw) to ≈0.62 (log), confirming
+substantial normalisation. At the participant level both conditions pass after log-transformation.
+Figure 1: Participant-level RT distributions: raw (columns 1 and 3) vs. log-transformed (columns 2 and
+4), for NB (left pair) and AB (right pair). Top row: histograms; bottom row: Q–Q plots.
+4
+Figure 2: Trial-level RT distributions. Raw RT (top left) is strongly right-skewed; log RT (top right) is
+approximately symmetric. Q–Q plots (bottom) confirm the improvement.
+3 H1: Overall Recognition Accuracy
+3.1 Hypotheses
+H0: OverallrecognitionaccuracydoesnotdifferbetweenNaturalBoundaryandAbruptBoundary
+participants (µNB = µAB).
+H1: NB participants have higher overall recognition accuracy than AB participants (µNB >µAB;
+directional).
+3.2 DV and descriptive statistics
+DV: Per-participant proportion correct across all 40 recognition trials.
+Table 3: Descriptive statistics — H1 (Overall accuracy).
+Group n M SD Mdn Q1 Q3 Min Max
+NB 88 0.871 0.073 0.875 0.825 0.925 0.650 1.000
+AB 80 0.841 0.082 0.850 0.794 0.900 0.575 0.975
+3.3 Test selection and result
+Normality (Shapiro–Wilk): NB p=< .001; AB p=
+(ceiling-bounded distribution).
+Variance homogeneity (Levene): p=
+.3412.
+Test selected: Mann–Whitney U (both groups non-normal).
+.0042. Both groups reject normality
+5
+Result: U = 4297.0, ptwo-sided =
+.0130, pone-sided =
+.0065. Rank-biserial rrb = 0.221.
+Decision: Reject H0. NB participants have significantly higher overall accuracy.
+4 H2: Before-Boundary Frame Accuracy
+4.1 Hypotheses
+H0: Recognition accuracy for Before-Boundary targets does not differ between conditions (µNB =
+µAB).
+H1: NB participants have higher Before-Boundary accuracy than AB participants (µNB >µAB;
+directional).
+4.2 DV and descriptive statistics
+DV: Per-participant proportion correct on BB-frame targets only (20 trials).
+Table 4: Descriptive statistics — H2 (Before-Boundary accuracy).
+Group n M SD Mdn Q1 Q3 Min Max
+NB 88 0.860 0.097 0.900 0.800 0.950 0.600 1.000
+AB 80 0.826 0.104 0.850 0.750 0.900 0.450 1.000
+4.3 Test selection and result
+Normality (Shapiro–Wilk): NB p=<.001; AB p=
+.0015. Both reject normality.
+Variance homogeneity (Levene): p=
+.7323.
+Test selected: Mann–Whitney U.
+Result: U = 4249.0, ptwo-sided =
+.0190, pone-sided =
+.0095. rrb = 0.207.
+Decision: Reject H0. NB participants recognise BB-frame targets significantly more accurately.
+5 H3: Mean Confidence Rating
+5.1 Hypotheses
+H0: Mean confidence rating does not differ between NB and AB participants (µNB = µAB).
+H1: NB participants report higher mean confidence than AB participants (µNB >µAB; direc-
+tional).
+5.2 DV and descriptive statistics
+DV: Per-participant mean confidence rating (1–5 Likert scale).
+Table 5: Descriptive statistics — H3 (Mean confidence rating).
+Group n M SD Mdn Q1 Q3 Min Max
+NB 88 4.207 0.412 4.275 3.969 4.513 3.000 5.000
+AB 80 4.087 0.457 4.100 3.700 4.431 2.900 4.900
+6
+5.3 Test selection and result
+Normality (Shapiro–Wilk): NB p=
+— most ratings ≥4).
+.0364; AB p=
+.1371. NB rejects normality (ceiling effect
+Variance homogeneity (Levene): p=
+.1496.
+Test selected: Mann–Whitney U.
+Result: U = 4050.5, ptwo-sided =
+.0923, pone-sided =
+.0461. rrb = 0.151.
+Decision: Fail to reject H0. NB participants are numerically more confident, but the difference
+is not significant. A ceiling effect likely reduces power.
+6 H4: Proportion of Low-Confidence Trials
+6.1 Hypotheses
+H0: The proportion of trials with confidence ≤3 does not differ between AB and NB participants
+(πAB = πNB).
+H1: AB participants have a higher proportion of low-confidence trials than NB participants
+(πAB >πNB; directional).
+6.2 DV and descriptive statistics
+DV: Per-participant proportion of trials rated confidence ≤3.
+Table 6: Descriptive statistics — H4 (Proportion of low-confidence trials).
+Group n M SD Mdn Q1 Q3 Min Max
+AB 80 0.263 0.147 0.263 0.150 0.375 0.000 0.650
+NB 88 0.233 0.127 0.225 0.144 0.300 0.000 0.625
+6.3 Test selection and result
+Normality (Shapiro–Wilk): AB p=
+.1510; NB p=
+.0453.
+Test selected: Mann-Whitney U test (two-sided, continuity-corrected).
+Result: U = 3918.500, ptwo-sided =
+.2053, pone-sided =
+.1027. Effect: Rank-biserial r = 0.113.
+Decision: Fail to reject H0. AB participants show numerically more low-confidence responses,
+but the difference is not significant.
+7 H5: Per-Movie Accuracy Variability
+7.1 Hypotheses
+H0: The standard deviation of per-movie accuracy does not differ between AB and NB partici-
+pants (σAB = σNB).
+H1: AB participants show greater variability in per-movie accuracy than NB participants
+(σAB >σNB; directional).
+7
+7.2 DV and descriptive statistics
+DV: Per-participant standard deviation of accuracy across the 40 movies.
+Table 7: Descriptive statistics — H5 (Per-movie accuracy variability).
+Group n M SD Mdn Q1 Q3 Min Max
+AB 80 0.353 0.079 0.362 0.304 0.410 0.158 0.501
+NB 88 0.320 0.086 0.335 0.267 0.385 0.000 0.483
+7.3 Test selection and result
+Normality (Shapiro–Wilk): AB p=
+.0069; NB p=
+.0032. Both reject normality.
+Variance homogeneity (Levene): p=
+.6271.
+Test selected: Mann–Whitney U.
+Result: U = 4337.0, ptwo-sided =
+.0093, pone-sided =
+.0047. rrb = 0.232.
+Decision: Reject H0. AB participants show significantly greater per-movie accuracy variability.
+8 H6: BB-Frame vs EM-Frame Response Time
+8.1 Hypotheses
+H0: Mean log RT does not differ between BB-frame and EM-frame recognition trials (µBB =
+µEM).
+H1: Mean log RT differs between BB-frame and EM-frame recognition trials (µBB ̸= µEM;
+non-directional).
+Rationale. If BB-frame targets engage a qualitatively different retrieval process (e.g., recollection
+rather than familiarity), recognition decisions for BB targets may take longer than for EM targets.
+This within-participant comparison is exploratory and non-directional.
+8.2 DV and descriptive statistics
+DV: Per-participant mean log RT on BB trials and mean log RT on EM trials; the within-
+participant difference BB−EM is tested against zero.
+Table 8: Descriptive statistics — H6 (BB vs EM log RT, within-participant).
+Measure n M SD Mdn Q1 Q3 Min Max
+BB mean log RT (ln s) 168 1.610 0.240 1.582 1.473 1.735 1.048 2.289
+EM mean log RT (ln s) 168 1.575 0.242 1.583 1.413 1.709 1.008 2.224
+BB−EM difference 168 0.035 0.134 0.037 -0.056 0.133 -0.328 0.355
+8.3 Test selection and result
+Normality of differences (Shapiro–Wilk): p=
+differences is used.
+.5319 (normal). One-sample t-test on
+Result: t= 3.378, df = 167, ptwo-sided =<.001. Effect: Cohen’s d_z = 0.261.
+8
+Decision: Reject H0. BB-frame recognition decisions take longer than EM-frame decisions (mean
+difference = 0.035 ln s), consistent with a more effortful retrieval process for boundary-region
+events.
+9 H7: Mean log RT (ln s) vs Overall accuracy (proportion
+correct)
+9.1 Hypotheses
+H0: There is no linear association between mean response time and overall recognition accuracy
+(ρ= 0 / r= 0; two-tailed).
+H1: There is a significant association between mean response time and overall recognition
+accuracy (ρ̸= 0 / r̸= 0; two-tailed).
+Rationale. Slower responses on a recognition task could reflect greater uncertainty and more
+effortful retrieval, which may be associated with lower accuracy (speed-accuracy trade-off).
+Alternatively, slower, more careful responding could improve accuracy. The direction is not
+pre-specified; the test is two-tailed.
+9.2 DV and descriptive statistics
+DV: Per-participant mean log RT (lns) and per-participant overall accuracy (proportion correct
+across all 40 trials). Log RT is used because raw RT is right-skewed (see §2.2).
+Table 9: Descriptive statistics — H7 (Mean log RT (ln s) and Overall accuracy (proportion correct)).
+Variable n M SD Mdn Q1 Q3 Min Max
+Mean log RT (ln s) 168 1.592 0.231 1.584 1.463 1.712 1.039 2.235
+Overall accuracy (proportion correct) 168 0.857 0.078 0.875 0.825 0.900 0.575 1.000
+9.3 Test selection and result
+Normality (Shapiro–Wilk): Mean log RT (ln s): W = 0.982, p=
+.0302 (non-normal); Overall
+accuracy (proportion correct): W = 0.949, p=<.001 (non-normal).
+Test selected: Spearman rank correlation (at least one variable non-normal; two-tailed). 95%
+CI obtained by bootstrap (B = 5,000).
+Result: ρ=−0.060 (n= 168, df = 166), ptwo-sided =
+.4414, 95%CI [-0.216, 0.092].
+Decision: Fail to reject H0. No significant correlation was found between Mean log RT (ln s)
+and Overall accuracy (proportion correct) (ρ=−0.060, p=
+.4414).
+9
+Figure 3: H7 scatter plot: per-participant mean log RT vs. overall recognition accuracy. Regression line
+added.
+10 H8: Mean log RT (ln s) vs Mean confidence rating (1–5)
+10.1 Hypotheses
+H0: There is no linear association between mean response time and mean confidence rating
+(ρ= 0 / r= 0; two-tailed).
+H1: There is a significant association between mean response time and mean confidence rating
+(ρ̸= 0 / r̸= 0; two-tailed).
+Rationale. High confidence is associated with fast, fluent recognition (the ‘feeling of knowing’
+literature), so slower mean RT may predict lower confidence. The direction is not pre-specified;
+the test is two-tailed.
+10.2 DV and descriptive statistics
+DV: Per-participant mean log RT (lns) and per-participant mean confidence rating (1–5 Likert
+scale). Log RT is used for the same reason as H7.
+Table 10: Descriptive statistics — H8 (Mean log RT (ln s) and Mean confidence rating (1–5)).
+Variable n M SD Mdn Q1 Q3 Min Max
+Mean log RT (ln s) 168 1.592 0.231 1.584 1.463 1.712 1.039 2.235
+Mean confidence rating (1–5) 168 4.150 0.437 4.225 3.825 4.475 2.900 5.000
+10.3 Test selection and result
+Normality (Shapiro–Wilk): Mean log RT (ln s): W = 0.982, p=
+confidence rating (1–5): W = 0.976, p=
+.0056 (non-normal).
+.0302 (non-normal); Mean
+10
+Test selected: Spearman rank correlation (at least one variable non-normal; two-tailed). 95%
+CI obtained by bootstrap (B = 5,000).
+Result: ρ=−0.169 (n= 168, df = 166), ptwo-sided =
+.0284, 95%CI [-0.320, -0.008].
+Decision: Reject H0. There is a statistically significant negative spearman correlation between
+Mean log RT (ln s) and Mean confidence rating (1–5) (ρ=−0.169, p=
+.0284).
+Figure 4: H8 scatter plot: per-participant mean log RT vs. mean confidence rating. Regression line
+added.
+11 Regression Analysis
+11.1 Overview and Feature Policy
+A strict, assignment-style regression pipeline was applied to predict trial-level recognition accuracy
+(resp.corr, binary) from pre-response design variables and pre-treatment participant covariates.
+Post-response variables (RT, confidence) were explicitly excluded to prevent data leakage. Two
+participants who failed the vigilance check (sub105_AB, sub70_NB) are excluded throughout.
+• Included (pre-response): condition, target_type, is_repeat, movie_duration, stimulus_id
+• Optional controls (pre-treatment): age, gender, handedness, vision
+• Excluded (leakage / post-response): resp.rt, conf_radio.response, conf_radio.rt
+11.2 Model 3: Participant-Level Binomial GLM
+A participant-level binomial GLM (link: logit) was fitted with condition, age, and gender as
+predictors, using (successes, failures) counts as the response. This model provides a participant-
+aggregated baseline.
+11
+Table 11: Model 3 — Participant-level binomial GLM: coefficients and odds ratios.
+Term Coef p OR
+const 2.608 <.001 13.570
+age -0.035 .0610 0.966
+condition_NB 0.262 <.001 1.299
+gender_Male -0.241 .0054 0.786
+Key finding: NB condition significantly increases accuracy odds (OR≈1.30, p<.001). Male
+gender is associated with lower accuracy odds (OR≈0.79, p=
+.005). Age is borderline (p≈.061).
+11.3 Model 1: Trial-Level GEE Logistic Regression
+Eight candidate GEE models (Binomial family, exchangeable working correlation, robust SE)
+were fitted with trials clustered by participant. Models were compared by QIC (lower is better);
+unstable models (non-finite parameters/SEs) were flagged and excluded from best-model selection.
+Table 12: Model 1 — GEE model comparison by QIC (lower is better).
+Model QIC Stable Description
+M1_stim_main 5433.295 Yes Main effects; + stimulus duration.
+M1_stim_interaction 5433.485 Yes Adds interaction; + stimulus dura-
+tion.
+M1_demo_main 5465.756 Yes Main effects; design + demographics
+(age, gender, handedness, vision).
+M1_demo_interaction 5465.950 Yes Adds interaction; design + demo-
+graphics.
+M1_core_main 5492.052 Yes Main effects; core design variables
+only.
+M1_core_interaction 5492.241 Yes Adds condition × target_type inter-
+action; core design variables only.
+M1_movieFE_interaction — No Adds interaction; + movie fixed ef-
+fects.
+M1_movieFE_main — No Main effects; + demographics + du-
+ration + movie fixed effects.
+11.4 Best Model: M1_stim_main Odds Ratios
+The best stable model by QIC is M1_stim_main: main effects of condition, target type, is_repeat,
+demographics, and stimulus duration.
+12
+Table 13: Best GEE model (M1_stim_main): odds ratios with 95% CI.
+Term Coef SE z p OR CI low CI high
+Intercept 1.733 0.598 2.898 0.004 5.659 1.752 18.276
+C(condition, Treatment(’NB’))[T.AB] -0.255 0.097 -2.634 0.008 0.775 0.641 0.937
+C(target_type, Treatment(’BB’))[T.EM] 0.210 0.066 3.167 0.002 1.233 1.083 1.404
+C(gender, Treatment(’Female’))[T.Male] -0.228 0.116 -1.969 0.049 0.796 0.635 0.999
+C(handedness)[T.Right handed] 0.334 0.249 1.340 .1803 1.396 0.857 2.274
+C(vision)[T.Normal] 0.058 0.095 0.606 .5442 1.059 0.879 1.276
+C(vision)[T.Uncorrected vision difficulty] 1.251 0.395 3.167 0.002 3.493 1.611 7.574
+is_repeat 0.415 0.108 3.844 0.000 1.514 1.226 1.871
+age -0.039 0.024 -1.654 .0981 0.962 0.918 1.007
+movie_duration 0.022 0.003 6.521 0.000 1.022 1.016 1.029
+Key findings:
+• Condition (AB vs NB):AB reduces correct-response odds by ≈25% (OR=0.775, p=
+confirming the hypothesis that NB supports better recognition.
+.008),
+• Target type (EM vs BB): EM targets are recognised ≈23% more often than BB targets
+(OR=1.233, p=
+.002).
+• Repeat (is_repeat): Repeated items show ≈51% higher odds of correct recognition
+(OR=1.514, p<.001).
+• Stimulus duration: Longer clips marginally increase accuracy odds per unit (OR=1.022,
+p<.001).
+• Gender (Male): Males show slightly lower odds (OR=0.796, p=
+.049).
+11.5 Diagnostics
+11.5.1 Collinearity (VIF)
+VIF was computed on the one-hot encoded covariate matrix. All predictors have VIF ≤1.10,
+indicating no concerning multicollinearity.
+Table 14: Variance inflation factors for trial-level predictors (excluding intercept).
+Variable VIF
+gender_Male 1.092
+age 1.090
+vision_Normal 1.063
+condition_NB 1.050
+vision_Uncorrected vision difficulty 1.025
+handedness_Right handed 1.017
+target_type_EM 1.007
+is_repeat 1.006
+movie_duration 1.001
+13
+11.5.2 Heteroscedasticity (Breusch–Pagan, OLS surrogate)
+A Breusch–Pagan test was run on an OLS surrogate model predicting participant-level accuracy
+from condition, age, and gender. The test is provided as an assignment-style diagnostic; the
+primary Model 1 is logistic (GEE) and does not assume homoscedasticity.
+Table 15: Breusch–Pagan heteroscedasticity test (OLS surrogate on participant accuracy).
+Model BP LM pLM BP F pF n R2
+OLS accuracy 2.633 .4517 0.870 .4577 168 0.083
+Both Breusch–Pagan statistics are non-significant (p > .40), indicating no evidence of het-
+eroscedasticity in the OLS surrogate.
+Figure 5: EDA: Mean recognition accuracy by condition and target type.
+14
+Figure 6: OLS surrogate diagnostic: residuals vs fitted participant accuracy.
+Figure 7: Model 1 diagnostic: Pearson residuals vs fitted P(correct).
+15
+Figure 8: Predicted P(correct) by condition and target type (best GEE model, covariates at baseline).
+11.6 Mixed-Effects Logistic Regression (GLMM)
+11.6.1 Rationale and Model Specification
+Because each participant completed 40 trials, observations are not independent. A mixed-effects
+(multilevel) logistic regression addresses this in two ways simultaneously:
+• Random intercept for participantid — controls for stable baseline accuracy differences
+between individuals (e.g., some people are simply better at the recognition task).
+• Random intercept for movieid — controls for differences in how memorable or difficult
+individual clips are, preventing hard/easy movies from inflating or deflating condition estimates.
+Using random intercepts for both levels produces a crossed random-effects structure: each
+participant is exposed to movies from their condition, and each movie is seen by multiple
+participants. This is the most principled approach for this fully balanced design.
+Formal model.
+logitP(correctij ) = β0 + β1 ABi + β2 is_repeatij + β3 agei + β4 malei + ui + wj
+ui ∼N(0, σ2
+participant)
+wj ∼N(0, σ2
+movie)
+where iindexes participant and j indexes movie. Estimation used variational Bayes (statsmodels
+BinomialBayesMixedGLM). Approximate z-statistics and p-values are derived from the normal
+distribution using posterior means divided by posterior SDs.
+16
+11.6.2 Fixed Effects
+Table 16: GLMM fixed effects: posterior means, SDs, and odds ratios with 95% CI. Reference: NB condi-
+tion, first presentation, Female gender. p-values are approximate (VB posterior / normal approximation).
+Predictorˆ
+β Post. SD z p OR 95% CI
+Intercept 3.144 0.037 83.987 <.001 23.197 [21.556, 24.963]
+Condition: AB vs NB -0.296 0.052 -5.675 <.001 0.744 [0.672, 0.824]
+Is Repeat (1 = repeated) 0.673 0.123 5.466 <.001 1.959 [1.539, 2.494]
+Age (years) -0.031 0.002 -18.398 <.001 0.970 [0.966, 0.973]
+Gender: Male vs Female -0.279 0.043 -6.544 <.001 0.756 [0.696, 0.822]
+Key findings.
+• Condition (AB vs NB): Participants in the Abrupt Boundary condition had significantly
+lower odds of correctly recognising a frame (OR=0.744, 95%CI [0.672, 0.824], z=−5.675,
+p<.001). This corresponds to approximately a 26% reduction in recognition odds relative to
+Natural Boundary, after accounting for individual and movie-level variance.
+• Repetition: Repeated movie presentations nearly doubled recognition odds (OR=1.959,
+95%CI [1.539, 2.494], p<.001), confirming the expected repetition-learning effect.
+• Age: Each additional year of age was associated with a small but significant decrease in
+recognition odds (OR=0.970, p < .001), suggesting older participants performed slightly
+worse on average.
+• Gender: Maleparticipantsshowedlowerrecognitionoddsthanfemaleparticipants(OR=0.756,
+95%CI [0.696, 0.822], p<.001).
+11.6.3 Random Effects
+The random-effects structure quantifies how much of the remaining variance in accuracy is
+attributable to between-participant differences versus between-movie differences.
+Table 17: GLMM random effects: posterior log-SD, implied SD and variance on the log-odds scale.
+Grouping Log-SD (posterior) SD Variance
+participant_id -0.685 0.504 0.254
+movie_id 0.014 1.014 1.029
+Interpretation. The participant random-effect SD of 0.504 (log-odds scale) indicates meaningful
+between-person variability in baseline recognition accuracy — justifying the inclusion of random
+intercepts per participant. The movie random-effect SD of 1.014 is notably larger, reflecting
+substantial variation in clip difficulty across stimuli. Ignoring these movie-level differences would
+inflate the apparent significance of fixed effects.
+17
+Figure 9: GLMM forest plot of fixed-effect odds ratios (95% CI). Red bars indicate p<.05. Reference
+categories: NB condition, first presentation (is_repeat = 0), Female gender.
+11.6.4 Summary
+The mixed-effects logistic regression provides the most methodologically rigorous answer to
+the primary research question. After controlling for individual participant ability and clip-
+level memorability, Abrupt Boundary (AB) cutting significantly reduces recognition
+accuracy relative to Natural Boundary (NB). The effect is robust: OR≈0.74, a ≈26% reduction
+in odds, p < .001. This converges with the GEE Model 1 estimate (OR=0.775) and the
+participant-level H1 result, establishing consistency across all three levels of analysis.
+18
