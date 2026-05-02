@@ -1,10 +1,10 @@
 variable,VIF
-const,165.11983929499047
-gender_Male,1.0918151508091185
+const,164.3656686174086
+gender_Male,1.091815150809118
 age,1.090451786639218
-vision_Normal,1.0632697288921664
-condition_NB,1.0501773929505027
-vision_Uncorrected vision difficulty,1.0252664742174638
-handedness_Right handed,1.0172069965587196
-movie_duration,1.001708601949499
-target_type_EM,1.0015932984481424
+vision_Normal,1.063269728892162
+condition_AB,1.0501773929505025
+vision_Uncorrected vision difficulty,1.0252664742174635
+handedness_Right handed,1.0172069965587258
+movie_duration,1.0017086019494992
+target_type_EM,1.001593298448144

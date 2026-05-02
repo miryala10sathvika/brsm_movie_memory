@@ -55,6 +55,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -65,6 +66,7 @@ import matplotlib.pyplot as plt
 
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+from scipy import stats
 from statsmodels.genmod.bayes_mixed_glm import BinomialBayesMixedGLM
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.stats.diagnostic import het_breuschpagan
@@ -76,6 +78,8 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 VIGILANCE_EXCLUSIONS = {"sub105_AB", "sub70_NB"}
 REPEATED_VIDEO_IDS = {3, 7, 18, 28, 37}
+EXPECTED_CONDITIONS = ("NB", "AB")
+EXPECTED_TARGET_TYPES = ("BB", "EM")
 
 
 def _target_type(target_img: str) -> str | float:
@@ -143,6 +147,41 @@ def save_dataframe(df: pd.DataFrame, filename: str) -> None:
     df.to_csv(OUT_DIR / filename, index=False)
 
 
+def enforce_expected_factor_levels(df: pd.DataFrame) -> pd.DataFrame:
+    """Keep the modelling frame explicit about the requested AB/NB and BB/EM levels."""
+    out = df.copy()
+    out["condition"] = out["condition"].astype(str).str.strip().str.upper()
+    out["target_type"] = out["target_type"].astype(str).str.strip().str.upper()
+
+    unexpected_condition = sorted(set(out["condition"].dropna()) - set(EXPECTED_CONDITIONS))
+    unexpected_target = sorted(set(out["target_type"].dropna()) - set(EXPECTED_TARGET_TYPES))
+    if unexpected_condition:
+        print(f"  Dropping unexpected condition levels: {unexpected_condition}")
+    if unexpected_target:
+        print(f"  Dropping unexpected target_type levels: {unexpected_target}")
+
+    out = out[
+        out["condition"].isin(EXPECTED_CONDITIONS)
+        & out["target_type"].isin(EXPECTED_TARGET_TYPES)
+    ].copy()
+    out["condition"] = pd.Categorical(out["condition"], categories=EXPECTED_CONDITIONS)
+    out["target_type"] = pd.Categorical(out["target_type"], categories=EXPECTED_TARGET_TYPES)
+
+    coverage = (
+        out.groupby(["condition", "target_type"], observed=False)
+        .size()
+        .reset_index(name="n_trials")
+    )
+    save_dataframe(coverage, "condition_target_type_trial_counts.csv")
+    missing_cells = coverage[coverage["n_trials"] == 0]
+    if not missing_cells.empty:
+        raise ValueError(
+            "Cannot fit condition/frame models because some AB/NB x BB/EM cells are empty: "
+            + missing_cells.to_string(index=False)
+        )
+    return out
+
+
 def compute_vif_from_design_matrix(X: pd.DataFrame) -> pd.DataFrame:
     X = X.copy().replace([np.inf, -np.inf], np.nan).dropna(axis=0)
     X = sm.add_constant(X, has_constant="add")
@@ -151,6 +190,56 @@ def compute_vif_from_design_matrix(X: pd.DataFrame) -> pd.DataFrame:
         [{"variable": col, "VIF": float(variance_inflation_factor(values, i))}
          for i, col in enumerate(X.columns)]
     ).sort_values("VIF", ascending=False)
+
+
+def residual_normality_stats(residuals, label: str) -> dict:
+    x = pd.Series(residuals, dtype="float64").replace([np.inf, -np.inf], np.nan).dropna()
+    out = {"model": label, "n": int(len(x))}
+    if len(x) < 3:
+        return out
+
+    out.update({
+        "mean": float(x.mean()),
+        "sd": float(x.std(ddof=1)),
+        "skew": float(stats.skew(x, bias=False)),
+        "kurtosis": float(stats.kurtosis(x, fisher=True, bias=False)),
+    })
+    if len(x) >= 8:
+        normaltest_stat, normaltest_p = stats.normaltest(x)
+        out["dagostino_k2"] = float(normaltest_stat)
+        out["dagostino_p"] = float(normaltest_p)
+    sample = x.sample(n=min(len(x), 5000), random_state=2026) if len(x) > 5000 else x
+    shapiro_stat, shapiro_p = stats.shapiro(sample)
+    out["shapiro_w"] = float(shapiro_stat)
+    out["shapiro_p"] = float(shapiro_p)
+    out["shapiro_n"] = int(len(sample))
+    return out
+
+
+def plot_residual_normality(residuals, label: str, filename: str) -> dict:
+    x = pd.Series(residuals, dtype="float64").replace([np.inf, -np.inf], np.nan).dropna()
+    stats_row = residual_normality_stats(x, label)
+    if len(x) < 3:
+        return stats_row
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    axes[0].hist(x, bins=35, density=True, color="#4c78a8", alpha=0.78, edgecolor="black")
+    mu, sd = float(x.mean()), float(x.std(ddof=1))
+    if np.isfinite(sd) and sd > 0:
+        xs = np.linspace(float(x.min()), float(x.max()), 250)
+        axes[0].plot(xs, stats.norm.pdf(xs, loc=mu, scale=sd), color="#d62728", lw=2)
+    axes[0].set_title(f"{label}: residual distribution")
+    axes[0].set_xlabel("residual")
+    axes[0].set_ylabel("density")
+    axes[0].grid(alpha=0.25)
+
+    stats.probplot(x, dist="norm", plot=axes[1])
+    axes[1].set_title(f"{label}: Q-Q plot")
+    axes[1].grid(alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(OUT_DIR / filename, dpi=160)
+    plt.close(fig)
+    return stats_row
 
 
 def odds_ratio_table(result) -> pd.DataFrame:
@@ -204,7 +293,9 @@ def fit_glmm_vb(formula: str, data: pd.DataFrame) -> tuple:
     """
     vc_formulas = {"participant": "0 + C(participant_id)"}
     model = BinomialBayesMixedGLM.from_formula(formula, vc_formulas, data=data)
-    result = model.fit_vb()
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        result = model.fit_vb(scale_fe=True)
     summary = result.summary()
 
     # Extract fixed effects using the correct VB result attributes
@@ -224,8 +315,11 @@ def fit_glmm_vb(formula: str, data: pd.DataFrame) -> tuple:
         "z_approx": fe_mean / np.where(fe_sd > 0, fe_sd, np.nan),
     })
     fe_df["p_approx"] = 2 * (1 - pd.Series(
-        [float(__import__("scipy").stats.norm.cdf(abs(z))) for z in fe_df["z_approx"]]
+        [float(stats.norm.cdf(abs(z))) for z in fe_df["z_approx"]]
     ))
+
+    optim_retvals = getattr(result, "optim_retvals", {}) or {}
+    warning_messages = [str(w.message) for w in caught]
 
     summary_dict = {
         "fixed_effects": fe_df.to_dict(orient="records"),
@@ -233,6 +327,11 @@ def fit_glmm_vb(formula: str, data: pd.DataFrame) -> tuple:
         "random_intercept_sd": re_sd,
         "n_participants": int(data["participant_id"].nunique()),
         "n_trials": int(len(data)),
+        "optimizer_success": optim_retvals.get("success", None),
+        "optimizer_message": optim_retvals.get("message", ""),
+        "optimizer_nit": optim_retvals.get("nit", None),
+        "optimizer_fun": optim_retvals.get("fun", None),
+        "warnings": warning_messages,
         "summary_text": str(summary),
     }
     return result, summary_dict, fe_df
@@ -242,6 +341,59 @@ def is_gee_result_stable(result) -> bool:
     params = np.asarray(result.params)
     bse = np.asarray(getattr(result, "bse", np.full_like(params, np.nan)))
     return bool(np.isfinite(params).all() and np.isfinite(bse).all())
+
+
+def convergence_info_glm(name: str, result) -> dict:
+    fit_history = getattr(result, "fit_history", {}) or {}
+    return {
+        "model": name,
+        "model_family": "binomial_GLM",
+        "converged": bool(getattr(result, "converged", False)),
+        "stable_finite_params": bool(np.isfinite(np.asarray(result.params)).all()),
+        "iterations": fit_history.get("iteration", np.nan),
+        "optimizer_success": np.nan,
+        "optimizer_message": "",
+        "warnings": "",
+    }
+
+
+def convergence_info_gee(name: str, result, stable: bool) -> dict:
+    fit_history = getattr(result, "fit_history", {}) or {}
+    history_params = fit_history.get("params", [])
+    iterations = len(history_params) - 1 if isinstance(history_params, list) else np.nan
+    converged = getattr(result, "converged", None)
+    if converged is None:
+        converged = stable
+    return {
+        "model": name,
+        "model_family": "GEE_logistic",
+        "converged": bool(converged),
+        "stable_finite_params": bool(stable),
+        "iterations": iterations,
+        "optimizer_success": np.nan,
+        "optimizer_message": "",
+        "warnings": "",
+    }
+
+
+def convergence_info_glmm(name: str, summary_dict: dict, fe_df: pd.DataFrame) -> dict:
+    warnings_text = " | ".join(summary_dict.get("warnings", []))
+    opt_success = summary_dict.get("optimizer_success", None)
+    stable = bool(
+        np.isfinite(fe_df[["post_mean", "post_sd"]].to_numpy(dtype=float)).all()
+        and np.isfinite(summary_dict.get("random_intercept_sd", np.nan))
+    )
+    converged = bool(opt_success) if opt_success is not None else stable and not warnings_text
+    return {
+        "model": name,
+        "model_family": "GLMM_VB",
+        "converged": converged,
+        "stable_finite_params": stable,
+        "iterations": summary_dict.get("optimizer_nit", np.nan),
+        "optimizer_success": opt_success,
+        "optimizer_message": summary_dict.get("optimizer_message", ""),
+        "warnings": warnings_text,
+    }
 
 
 def try_get_qic(result) -> float | None:
@@ -342,6 +494,11 @@ def heteroscedasticity_diagnostics_ols(pp: pd.DataFrame) -> pd.DataFrame:
     fig.savefig(OUT_DIR / "diagnostic_ols_residuals_vs_fitted.png", dpi=160)
     plt.close(fig)
 
+    normality = plot_residual_normality(
+        model.resid,
+        "OLS surrogate accuracy",
+        "diagnostic_ols_residual_normality.png",
+    )
     out = pd.DataFrame([{
         "model": "OLS_surrogate_accuracy",
         "bp_lm": float(lm_stat),
@@ -350,12 +507,13 @@ def heteroscedasticity_diagnostics_ols(pp: pd.DataFrame) -> pd.DataFrame:
         "bp_f_p": float(f_p),
         "n": int(len(d)),
         "r2": float(model.rsquared),
+        **{f"resid_{k}": v for k, v in normality.items() if k != "model"},
     }])
     save_dataframe(out, "diagnostic_breusch_pagan.csv")
     return out
 
 
-def plot_logistic_residuals(result, df: pd.DataFrame, filename: str) -> None:
+def plot_logistic_residuals(result, df: pd.DataFrame, filename: str) -> np.ndarray:
     fitted = result.predict(df)
     y = df["resp.corr"].astype(float).values
     var = np.clip(fitted * (1 - fitted), 1e-6, None)
@@ -370,6 +528,7 @@ def plot_logistic_residuals(result, df: pd.DataFrame, filename: str) -> None:
     fig.tight_layout()
     fig.savefig(OUT_DIR / filename, dpi=160)
     plt.close(fig)
+    return pearson
 
 
 def plot_predicted_probabilities(model_result, pred_df: pd.DataFrame, filename: str) -> None:
@@ -420,6 +579,55 @@ def plot_glmm_forest(fe_df: pd.DataFrame, filename: str) -> None:
     plt.close(fig)
 
 
+def extract_gee_interaction_effects(fitted: list[dict]) -> pd.DataFrame:
+    rows = []
+    main_model_by_interaction = {
+        "M1_core_interaction": "M1_core_main",
+        "M1_demo_interaction": "M1_demo_main",
+        "M1_stim_interaction": "M1_stim_main",
+        "M1_movieFE_interaction": "M1_movieFE_main",
+    }
+    qic_by_name = {f["name"]: f["qic"] for f in fitted}
+    for fit in fitted:
+        if "interaction" not in fit["name"]:
+            continue
+        table = odds_ratio_table(fit["result"])
+        table = table[table["term"].str.contains(":", regex=False)].copy()
+        main_qic = qic_by_name.get(main_model_by_interaction.get(fit["name"]))
+        qic = fit["qic"]
+        qic_delta = (
+            float(qic - main_qic)
+            if qic is not None and main_qic is not None
+            else np.nan
+        )
+        for _, row in table.iterrows():
+            rows.append({
+                "model": fit["name"],
+                "term": row["term"],
+                "coef": row["coef"],
+                "se": row["se"],
+                "p": row["p"],
+                "OR": row["OR"],
+                "OR_ci_low": row["OR_ci_low"],
+                "OR_ci_high": row["OR_ci_high"],
+                "qic": qic,
+                "qic_delta_vs_main": qic_delta,
+                "stable": fit["stable"],
+                "description": fit["description"],
+            })
+    return pd.DataFrame(rows)
+
+
+def extract_glmm_interaction_effects(fe_df: pd.DataFrame, model_name: str) -> pd.DataFrame:
+    out = fe_df[fe_df["term"].str.contains(":", regex=False)].copy()
+    if out.empty:
+        return out
+    out.insert(0, "model", model_name)
+    out["OR_ci_low_approx"] = np.exp(out["post_mean"] - 1.96 * out["post_sd"])
+    out["OR_ci_high_approx"] = np.exp(out["post_mean"] + 1.96 * out["post_sd"])
+    return out
+
+
 def main() -> None:
     # ── 0) Load data ──────────────────────────────────────────────────
     trials = load_and_merge_trial_level()
@@ -446,11 +654,17 @@ def main() -> None:
     df = df.dropna(subset=["participant_id", "resp.corr", "condition", "target_type"])
     df = df[df["resp.corr"].isin([0, 1])].copy()
     df["resp.corr"] = df["resp.corr"].astype(int)
+    df = enforce_expected_factor_levels(df)
 
     # Column name for formula compatibility
     df["resp_corr"] = df["resp.corr"]
 
     save_dataframe(df, "model_frame_trial_accuracy.csv")
+    print("\nCondition x target_type counts:")
+    print(
+        pd.crosstab(df["condition"], df["target_type"], dropna=False)
+        .to_string()
+    )
 
     # ── 2) EDA ────────────────────────────────────────────────────────
     plot_accuracy_bars(df)
@@ -473,18 +687,38 @@ def main() -> None:
 
     # ── 4) Model 3 — participant-level GLM ────────────────────────────
     print("\n" + "=" * 72)
-    print("MODEL 3 — PARTICIPANT-LEVEL BASELINE (binomial GLM)")
+    print("MODEL 3 — PARTICIPANT-LEVEL FRAME MODEL (binomial GLM)")
     print("=" * 72)
-    pp_m3 = pp[["participant_id", "condition", "n_correct", "n_trials", "age", "gender"]].copy()
+    pp_m3 = (
+        df.groupby(["participant_id", "condition", "target_type"], observed=True)
+        .agg(
+            n_correct=("resp.corr", "sum"),
+            n_trials=("resp.corr", "size"),
+            age=("age", "first"),
+            gender=("gender", "first"),
+        )
+        .reset_index()
+    )
     for col in ["n_correct", "n_trials", "age"]:
         pp_m3[col] = pd.to_numeric(pp_m3[col], errors="coerce")
-    pp_m3 = pp_m3.dropna(subset=["n_correct", "n_trials", "condition"]).reset_index(drop=True)
+    pp_m3 = pp_m3.dropna(
+        subset=["n_correct", "n_trials", "condition", "target_type"]
+    ).reset_index(drop=True)
     pp_m3["n_trials"] = pp_m3["n_trials"].astype(int)
     pp_m3["n_correct"] = pp_m3["n_correct"].astype(int)
     pp_m3["n_incorrect"] = pp_m3["n_trials"] - pp_m3["n_correct"]
+    save_dataframe(pp_m3, "model3_participant_frame_model_frame.csv")
 
     endog = np.column_stack([pp_m3["n_correct"].values, pp_m3["n_incorrect"].values])
-    exog_df = pd.get_dummies(pp_m3[["condition", "age", "gender"]], drop_first=True)
+    exog_df = pd.get_dummies(
+        pp_m3[["condition", "target_type", "age", "gender"]],
+        drop_first=True,
+        dtype=float,
+    )
+    if {"condition_AB", "target_type_EM"}.issubset(exog_df.columns):
+        exog_df["condition_AB:target_type_EM"] = (
+            exog_df["condition_AB"] * exog_df["target_type_EM"]
+        )
     exog = sm.add_constant(exog_df.replace([np.inf, -np.inf], np.nan), has_constant="add").astype(float)
     glm_m3 = sm.GLM(endog, exog, family=sm.families.Binomial()).fit()
     print(glm_m3.summary())
@@ -496,6 +730,7 @@ def main() -> None:
         "OR": np.exp(glm_m3.params),
     })
     save_dataframe(m3_or, "model3_participant_glm_odds_ratios.csv")
+    convergence_rows = [convergence_info_glm("Model3_participant_frame_GLM", glm_m3)]
 
     # ── 5) Model 1 — GEE logistic ────────────────────────────────────
     print("\n" + "=" * 72)
@@ -576,6 +811,7 @@ def main() -> None:
         res = fit_gee_binomial(spec.formula, df, group_col="participant_id")
         qic = try_get_qic(res)
         stable = is_gee_result_stable(res)
+        convergence_rows.append(convergence_info_gee(spec.name, res, stable))
         fitted.append({
             "name": spec.name,
             "description": spec.description,
@@ -594,6 +830,8 @@ def main() -> None:
         for f in fitted
     ]).sort_values(["stable", "qic", "model"], ascending=[False, True, True], na_position="last")
     save_dataframe(model_compare, "model1_model_comparison_qic.csv")
+    gee_interactions = extract_gee_interaction_effects(fitted)
+    save_dataframe(gee_interactions, "model1_interaction_effects.csv")
     print("\nModel comparison saved.")
 
     stable_compare = model_compare[model_compare["stable"]]
@@ -618,6 +856,7 @@ def main() -> None:
     )
     _, glmm_core_summary, glmm_core_fe = fit_glmm_vb(glmm_core_formula, df)
     save_dataframe(glmm_core_fe, "glmm_core_fixed_effects.csv")
+    convergence_rows.append(convergence_info_glmm("GLMM_core_VB", glmm_core_summary, glmm_core_fe))
     print(glmm_core_summary["summary_text"])
     print(f"  Random intercept SD: {glmm_core_summary['random_intercept_sd']:.4f}")
 
@@ -628,6 +867,9 @@ def main() -> None:
     )
     _, glmm_int_summary, glmm_int_fe = fit_glmm_vb(glmm_int_formula, df)
     save_dataframe(glmm_int_fe, "glmm_interaction_fixed_effects.csv")
+    glmm_interactions = extract_glmm_interaction_effects(glmm_int_fe, "GLMM_interaction_VB")
+    save_dataframe(glmm_interactions, "glmm_interaction_effects.csv")
+    convergence_rows.append(convergence_info_glmm("GLMM_interaction_VB", glmm_int_summary, glmm_int_fe))
     print(glmm_int_summary["summary_text"])
     print(f"  Random intercept SD: {glmm_int_summary['random_intercept_sd']:.4f}")
 
@@ -640,6 +882,7 @@ def main() -> None:
     )
     _, glmm_full_summary, glmm_full_fe = fit_glmm_vb(glmm_full_formula, df_glmm_full)
     save_dataframe(glmm_full_fe, "glmm_full_fixed_effects.csv")
+    convergence_rows.append(convergence_info_glmm("GLMM_full_VB", glmm_full_summary, glmm_full_fe))
     print(glmm_full_summary["summary_text"])
     print(f"  Random intercept SD: {glmm_full_summary['random_intercept_sd']:.4f}")
 
@@ -652,6 +895,8 @@ def main() -> None:
         "interaction": glmm_int_summary,
         "full": glmm_full_summary,
     }
+    convergence_df = pd.DataFrame(convergence_rows)
+    save_dataframe(convergence_df, "model_convergence_diagnostics.csv")
 
     # ── 7) Prediction grid + residuals for best GEE ──────────────────
     age_mean = float(pd.to_numeric(df["age"], errors="coerce").dropna().mean())
@@ -677,7 +922,26 @@ def main() -> None:
     })
     save_dataframe(pred_grid, "prediction_grid.csv")
     plot_predicted_probabilities(best["result"], pred_grid, "predicted_probabilities.png")
-    plot_logistic_residuals(best["result"], df, "diagnostic_logistic_pearson_residuals.png")
+    gee_pearson = plot_logistic_residuals(
+        best["result"],
+        df,
+        "diagnostic_logistic_pearson_residuals.png",
+    )
+    gee_normality = plot_residual_normality(
+        gee_pearson,
+        f"{best_name} Pearson residuals",
+        "diagnostic_logistic_pearson_residual_normality.png",
+    )
+    ols_normality = {
+        k.replace("resid_", ""): v
+        for k, v in bp_diag.iloc[0].to_dict().items()
+        if k.startswith("resid_")
+    }
+    ols_normality["model"] = "OLS surrogate accuracy"
+    save_dataframe(
+        pd.DataFrame([ols_normality, gee_normality]),
+        "residual_normality_tests.csv",
+    )
 
     # ── 8) Write summary text ─────────────────────────────────────────
     summary_path = OUT_DIR / "regression_summary.txt"
@@ -687,20 +951,35 @@ def main() -> None:
         f.write(f"Vigilance exclusions: {sorted(VIGILANCE_EXCLUSIONS)}\n")
         f.write(f"Repeated movie IDs excluded: {sorted(REPEATED_VIDEO_IDS)}\n")
         f.write(f"Trial rows (after all filtering): {len(df):,}\n")
+        f.write(f"Condition levels modelled: {list(EXPECTED_CONDITIONS)}\n")
+        f.write(f"Frame/target_type levels modelled: {list(EXPECTED_TARGET_TYPES)}\n")
+        f.write("\nCondition x target_type counts:\n")
+        f.write(pd.crosstab(df["condition"], df["target_type"], dropna=False).to_string() + "\n")
         f.write("\nFeature policy:\n")
         f.write("  Included: condition, target_type, movie_duration, age, gender, handedness, vision\n")
-        f.write("  Excluded (leakage): resp.rt, conf_radio.response\n")
+        f.write("  Excluded (leakage): resp.rt, conf_radio.response, conf_radio.rt\n")
         f.write("  Excluded (zero-variance after filtering): is_repeat\n")
 
         bp = bp_diag.iloc[0].to_dict() if bp_diag is not None and len(bp_diag) > 0 else {}
         f.write(f"\nBreusch-Pagan (OLS surrogate): LM p={bp.get('bp_lm_p', 'n/a'):.4g}, "
                 f"F p={bp.get('bp_f_p', 'n/a'):.4g}, R2={bp.get('r2', 'n/a'):.4g}\n")
+        f.write("\n--- Residual Normality Diagnostics ---\n")
+        normality_df = pd.DataFrame([ols_normality, gee_normality])
+        f.write(normality_df.round(4).to_string(index=False) + "\n")
 
         f.write("\n--- GEE Model Comparison (QIC) ---\n")
         f.write(model_compare.to_string(index=False) + "\n")
+        f.write("\n--- GEE Interaction Effects ---\n")
+        if gee_interactions.empty:
+            f.write("No interaction terms found.\n")
+        else:
+            f.write(gee_interactions.round(4).to_string(index=False) + "\n")
         f.write(f"\nBest GEE model: {best_name}\n")
         f.write("\nBest GEE odds ratios:\n")
         f.write(odds_ratio_table(best["result"]).round(4).to_string(index=False) + "\n")
+
+        f.write("\n--- Model Convergence Diagnostics ---\n")
+        f.write(convergence_df.to_string(index=False) + "\n")
 
         f.write("\n--- GLMM Core (VB) ---\n")
         for row in glmm_core_summary["fixed_effects"]:
@@ -725,7 +1004,8 @@ def main() -> None:
     with synthesis_path.open("w", encoding="utf-8") as f:
         f.write("RESULTS SYNTHESIS (repeated movies excluded)\n")
         f.write("=" * 72 + "\n\n")
-        f.write("### Model 3 — Participant-level binomial GLM\n\n")
+        f.write("### Model 3 — Participant-level frame binomial GLM\n\n")
+        f.write("Rows are participant × condition × target_type, so AB/NB and BB/EM are included.\n")
         for term, coef, pval, oratio in zip(
             m3_or["term"], m3_or["coef"], m3_or["p"], m3_or["OR"]
         ):

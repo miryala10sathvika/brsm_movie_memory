@@ -1,11 +1,14 @@
 RESULTS SYNTHESIS (repeated movies excluded)
 ========================================================================
 
-### Model 3 — Participant-level binomial GLM
+### Model 3 — Participant-level frame binomial GLM
 
-  age: coef=-0.0347, p=0.06099, OR=0.9659
-  condition_NB: coef=0.2618, p=0.0001805, OR=1.2993
-  gender_Male: coef=-0.2406, p=0.005435, OR=0.7862
+Rows are participant × condition × target_type, so AB/NB and BB/EM are included.
+  age: coef=-0.0339, p=0.08223, OR=0.9666
+  condition_AB: coef=-0.3386, p=0.000539, OR=0.7127
+  target_type_EM: coef=0.2464, p=0.02148, OR=1.2794
+  gender_Male: coef=-0.2485, p=0.006397, OR=0.7800
+  condition_AB:target_type_EM: coef=0.1088, p=0.4631, OR=1.1150
 
 ### Model 1 — Best GEE model: M1_stim_interaction
 
@@ -22,8 +25,8 @@ RESULTS SYNTHESIS (repeated movies excluded)
 ### GLMM (Variational Bayes) — Core model
 
 Random participant intercept SD: 0.4203
-  C(condition, Treatment('NB'))[T.AB]: OR=0.7546, post_mean=-0.2816, post_SD=0.0511
-  C(target_type, Treatment('BB'))[T.EM]: OR=1.3674, post_mean=0.3129, post_SD=0.0562
+  C(condition, Treatment('NB'))[T.AB]: OR=0.7520, post_mean=-0.2851, post_SD=0.0737
+  C(target_type, Treatment('BB'))[T.EM]: OR=1.3648, post_mean=0.3110, post_SD=0.0742
 
 ### GLMM Interaction note
 
@@ -34,8 +37,8 @@ whether the EM-vs-BB accuracy difference is the same in both conditions.
   Simple effects:
     Effect of condition for BB trials = main effect of condition only
     Effect of condition for EM trials = main effect + interaction coefficient
-  Intercept: OR=6.2150
-  C(condition, Treatment('NB'))[T.AB]: OR=0.7198
-  C(target_type, Treatment('BB'))[T.EM]: OR=1.2918
-  C(condition, Treatment('NB'))[T.AB]:C(target_type, Treatment('BB'))[T.EM]: OR=1.1176
+  Intercept: OR=6.1750
+  C(condition, Treatment('NB'))[T.AB]: OR=0.7163
+  C(target_type, Treatment('BB'))[T.EM]: OR=1.2872
+  C(condition, Treatment('NB'))[T.AB]:C(target_type, Treatment('BB'))[T.EM]: OR=1.1202
   Random intercept SD: 0.4205

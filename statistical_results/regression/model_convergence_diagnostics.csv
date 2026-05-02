@@ -1,0 +1,13 @@
+model,model_family,converged,stable_finite_params,iterations,optimizer_success,optimizer_message,warnings
+Model3_participant_frame_GLM,binomial_GLM,True,True,5,,,
+M1_core_main,GEE_logistic,True,True,3,,,
+M1_core_interaction,GEE_logistic,True,True,1,,,
+M1_demo_main,GEE_logistic,True,True,4,,,
+M1_demo_interaction,GEE_logistic,True,True,4,,,
+M1_stim_main,GEE_logistic,True,True,4,,,
+M1_stim_interaction,GEE_logistic,True,True,4,,,
+M1_movieFE_main,GEE_logistic,False,False,59,,,
+M1_movieFE_interaction,GEE_logistic,False,False,59,,,
+GLMM_core_VB,GLMM_VB,True,True,104,True,Optimization terminated successfully.,
+GLMM_interaction_VB,GLMM_VB,True,True,126,True,Optimization terminated successfully.,
+GLMM_full_VB,GLMM_VB,True,True,151,True,Optimization terminated successfully.,

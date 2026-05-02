@@ -1,0 +1,5 @@
+condition,target_type,n_trials
+NB,BB,1584
+NB,EM,1496
+AB,BB,1440
+AB,EM,1360

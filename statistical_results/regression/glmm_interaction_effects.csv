@@ -1,0 +1,2 @@
+model,term,post_mean,post_sd,OR,z_approx,p_approx,OR_ci_low_approx,OR_ci_high_approx
+GLMM_interaction_VB,"C(condition, Treatment('NB'))[T.AB]:C(target_type, Treatment('BB'))[T.EM]",0.11349531623246206,0.08875802260551842,1.1201866421862623,1.2787048753540577,0.2010010022172668,0.9413216241257706,1.3330386566843342

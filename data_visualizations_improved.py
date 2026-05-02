@@ -108,13 +108,13 @@ COLOR_OVERALL = '#95A5A6'  # Gray
 
 # FIGURE 1A: Basic Demographics (Age)
 fig, ax = plt.subplots(1, 1, figsize=(10, 6))
-ax.hist(df_participants['age'], bins=20, color=COLOR_OVERALL, edgecolor='black', 
+ax.hist(df_participants['age'], bins=20, color='#00008B', edgecolor='black', 
         alpha=0.85, linewidth=1.5)
 ax.axvline(df_participants['age'].mean(), color='#C0392B', linestyle='--', linewidth=3,
            label=f'Mean = {df_participants["age"].mean():.1f} years')
 ax.set_xlabel('Age (years)', fontweight='bold', fontsize=14)
 ax.set_ylabel('Number of Participants', fontweight='bold', fontsize=14)
-ax.set_title('Age Distribution (N=146)', fontweight='bold', fontsize=16, pad=20)
+ax.set_title('Age Distribution (N=170)', fontweight='bold', fontsize=16, pad=20)
 ax.legend(loc='upper right', fontsize=12, framealpha=0.95)
 ax.grid(axis='y', alpha=0.3, linestyle='--')
 ax.spines['top'].set_visible(False)
@@ -149,13 +149,13 @@ plt.close()
 
 # FIGURE 1C: Overall Accuracy Distribution
 fig, ax = plt.subplots(1, 1, figsize=(10, 6))
-ax.hist(df_participants['accuracy'], bins=25, color=COLOR_OVERALL, edgecolor='black', 
+ax.hist(df_participants['accuracy'], bins=25, color='#00008B', edgecolor='black', 
         alpha=0.85, linewidth=1.5)
 ax.axvline(df_participants['accuracy'].mean(), color='#C0392B', linestyle='--', linewidth=3,
            label=f'Mean = {df_participants["accuracy"].mean():.3f}')
 ax.set_xlabel('Accuracy (Proportion Correct)', fontweight='bold', fontsize=14)
 ax.set_ylabel('Number of Participants', fontweight='bold', fontsize=14)
-ax.set_title('Overall Accuracy Distribution (N=146 participants)', fontweight='bold', fontsize=16, pad=20)
+ax.set_title('Overall Accuracy Distribution (N=170 participants)', fontweight='bold', fontsize=16, pad=20)
 ax.legend(loc='upper left', fontsize=12, framealpha=0.95)
 ax.grid(axis='y', alpha=0.3, linestyle='--')
 ax.spines['top'].set_visible(False)
@@ -543,7 +543,7 @@ for autotext in autotexts:
     autotext.set_color('white')
     autotext.set_fontsize(16)
     autotext.set_fontweight('bold')
-ax.set_title('Gender Distribution (N=146 participants)', fontweight='bold', fontsize=16, pad=20)
+ax.set_title('Gender Distribution (N=170 participants)', fontweight='bold', fontsize=16, pad=20)
 plt.tight_layout()
 plt.savefig(OUTPUT_DIR / '05d_pie_gender.png', dpi=400, bbox_inches='tight')
 print("   ✓ Saved: 05d_pie_gender.png")
@@ -561,7 +561,7 @@ for autotext in autotexts:
     autotext.set_color('white')
     autotext.set_fontsize(16)
     autotext.set_fontweight('bold')
-ax.set_title('Handedness Distribution (N=146 participants)', fontweight='bold', fontsize=16, pad=20)
+ax.set_title('Handedness Distribution (N=170 participants)', fontweight='bold', fontsize=16, pad=20)
 plt.tight_layout()
 plt.savefig(OUTPUT_DIR / '05e_pie_handedness.png', dpi=400, bbox_inches='tight')
 print("   ✓ Saved: 05e_pie_handedness.png")
@@ -579,7 +579,7 @@ for autotext in autotexts:
     autotext.set_color('white')
     autotext.set_fontsize(16)
     autotext.set_fontweight('bold')
-ax.set_title('Vision Status Distribution (N=146 participants)', fontweight='bold', fontsize=16, pad=20)
+ax.set_title('Vision Status Distribution (N=170 participants)', fontweight='bold', fontsize=16, pad=20)
 plt.tight_layout()
 plt.savefig(OUTPUT_DIR / '05f_pie_vision.png', dpi=400, bbox_inches='tight')
 print("   ✓ Saved: 05f_pie_vision.png")
