@@ -68,9 +68,9 @@ Model3_participant_frame_GLM binomial_GLM       True                  True      
          M1_stim_interaction GEE_logistic       True                  True           4               NaN                                               
              M1_movieFE_main GEE_logistic      False                 False          59               NaN                                               
       M1_movieFE_interaction GEE_logistic      False                 False          59               NaN                                               
-                GLMM_core_VB      GLMM_VB       True                  True         104              True Optimization terminated successfully.         
-         GLMM_interaction_VB      GLMM_VB       True                  True         126              True Optimization terminated successfully.         
-                GLMM_full_VB      GLMM_VB       True                  True         151              True Optimization terminated successfully.         
+                GLMM_core_VB      GLMM_VB       True                  True         100              True Optimization terminated successfully.         
+         GLMM_interaction_VB      GLMM_VB       True                  True         114              True Optimization terminated successfully.         
+                GLMM_full_VB      GLMM_VB       True                  True         161              True Optimization terminated successfully.         
 
 --- GLMM Core (VB) ---
   Intercept: post_mean=1.8201, post_sd=0.0370, OR=6.1727

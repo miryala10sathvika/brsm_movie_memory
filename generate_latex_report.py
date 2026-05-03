@@ -347,6 +347,9 @@ def build_tex(results: dict) -> str:
     A(r"""
 \section{Overview and Data Quality}
 
+\subsection{Experiment Description}
+The BRSM Movie Memory Experiment investigates how the type of event boundaries (Natural vs. Abrupt) encountered during video encoding influences subsequent recognition memory. Participants viewed a series of video clips and later completed a recognition task. The goal is to determine if abrupt edits disrupt boundary-related memory retrieval more than natural transitions.
+
 \subsection{Vigilance-based exclusions}
 Two participants failed the embedded vigilance check and are excluded from every analysis:
 \begin{itemize}[nosep]

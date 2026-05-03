@@ -1,8 +1,8 @@
 model,qic,stable,description
 M1_stim_interaction,4889.54946962362,True,Interaction + demographics + stimulus duration.
-M1_stim_main,4889.900519788273,True,Main effects + demographics + stimulus duration.
-M1_demo_interaction,4909.072099800127,True,Interaction + demographics.
-M1_demo_main,4909.37175308871,True,"Main effects + demographics (age, gender, handedness, vision)."
+M1_stim_main,4889.900519788274,True,Main effects + demographics + stimulus duration.
+M1_demo_interaction,4909.072099800126,True,Interaction + demographics.
+M1_demo_main,4909.371753088711,True,"Main effects + demographics (age, gender, handedness, vision)."
 M1_core_interaction,4930.403371567475,True,Condition × target_type interaction. The interaction term tests whether the BB-vs-EM accuracy difference is moderated by condition (NB vs AB).
 M1_core_main,4930.714810160553,True,Main effects: condition + target_type.
 M1_movieFE_interaction,,False,Interaction + movie fixed effects.

@@ -27,6 +27,9 @@
 
 \section{Overview and Data Quality}
 
+\subsection{Experiment Description}
+The BRSM Movie Memory Experiment investigates how the type of event boundaries (Natural vs. Abrupt) encountered during video encoding influences subsequent recognition memory. Participants viewed a series of video clips and later completed a recognition task. The goal is to determine if abrupt edits disrupt boundary-related memory retrieval more than natural transitions.
+
 \subsection{Vigilance-based exclusions}
 Two participants failed the embedded vigilance check and are excluded from every analysis:
 \begin{itemize}[nosep]
@@ -492,13 +495,17 @@ predictors, using (successes, failures) counts as the response.
 \textbf{Term} & \textbf{Coef} & \textbf{$p$} & \textbf{OR} \\
 \hline
 
-    const & 2.608 & $<.001$ & 13.570 \\
+    const & 2.711 & $<.001$ & 15.047 \\
 
-    age & -0.035 & $.0610$ & 0.966 \\
+    age & -0.034 & $.0822$ & 0.967 \\
 
-    condition\_NB & 0.262 & $<.001$ & 1.299 \\
+    condition\_AB & -0.339 & $<.001$ & 0.713 \\
 
-    gender\_Male & -0.241 & $.0054$ & 0.786 \\
+    target\_type\_EM & 0.246 & $.0215$ & 1.279 \\
+
+    gender\_Male & -0.248 & $.0064$ & 0.780 \\
+
+    condition\_AB:target\_type\_EM & 0.109 & $.4631$ & 1.115 \\
 
 \hline
 \end{tabular}
@@ -641,7 +648,7 @@ GEE estimates \emph{population-average} ORs (``On average across all participant
 \textbf{Variable} & \textbf{VIF} \\
 \hline
 
-    const & 165.120 \\
+    const & 164.366 \\
 
     gender\_Male & 1.092 \\
 
@@ -649,7 +656,7 @@ GEE estimates \emph{population-average} ORs (``On average across all participant
 
     vision\_Normal & 1.063 \\
 
-    condition\_NB & 1.050 \\
+    condition\_AB & 1.050 \\
 
     vision\_Uncorrected vision difficulty & 1.025 \\
 
@@ -718,9 +725,9 @@ Three GLMM variants are reported:
 \hline
 \textbf{Predictor} & \textbf{Post.\ Mean} & \textbf{Post.\ SD} & \textbf{$z$} & \textbf{$p$ (approx)} & \textbf{OR} \\
 \hline
-    Intercept & 1.8022 & 0.0370 & 48.717 & $<.001$ & 6.0632 \\
-    Condition: AB vs NB & -0.2816 & 0.0511 & -5.509 & $<.001$ & 0.7546 \\
-    Target type: EM vs BB & 0.3129 & 0.0562 & 5.571 & $<.001$ & 1.3674 \\
+    Intercept & 1.8201 & 0.0370 & 49.201 & $<.001$ & 6.1727 \\
+    Condition: AB vs NB & -0.2851 & 0.0737 & -3.866 & $<.001$ & 0.7520 \\
+    Target type: EM vs BB & 0.3110 & 0.0742 & 4.190 & $<.001$ & 1.3648 \\
 \hline
 \end{tabular}
 \caption{GLMM core --- main effects (repeated movies excluded).}
@@ -734,10 +741,10 @@ Three GLMM variants are reported:
 \hline
 \textbf{Predictor} & \textbf{Post.\ Mean} & \textbf{Post.\ SD} & \textbf{$z$} & \textbf{$p$ (approx)} & \textbf{OR} \\
 \hline
-    Intercept & 1.8270 & 0.0370 & 49.377 & $<.001$ & 6.2150 \\
-    Condition: AB vs NB & -0.3288 & 0.0512 & -6.425 & $<.001$ & 0.7198 \\
-    Target type: EM vs BB & 0.2560 & 0.0562 & 4.559 & $<.001$ & 1.2918 \\
-    Condition(AB) $\times$ Target(EM) & 0.1112 & 0.0782 & 1.422 & $.1549$ & 1.1176 \\
+    Intercept & 1.8205 & 0.0370 & 49.201 & $<.001$ & 6.1750 \\
+    Condition: AB vs NB & -0.3336 & 0.0738 & -4.523 & $<.001$ & 0.7163 \\
+    Target type: EM vs BB & 0.2525 & 0.0743 & 3.401 & $<.001$ & 1.2872 \\
+    Condition(AB) $\times$ Target(EM) & 0.1135 & 0.0888 & 1.279 & $.2010$ & 1.1202 \\
 \hline
 \end{tabular}
 \caption{GLMM interaction --- condition $\times$ target\_type (repeated movies excluded).}
@@ -751,12 +758,12 @@ Three GLMM variants are reported:
 \hline
 \textbf{Predictor} & \textbf{Post.\ Mean} & \textbf{Post.\ SD} & \textbf{$z$} & \textbf{$p$ (approx)} & \textbf{OR} \\
 \hline
-    Intercept & 2.0576 & 0.0371 & 55.497 & $<.001$ & 7.8273 \\
-    Condition: AB vs NB & -0.2925 & 0.0513 & -5.706 & $<.001$ & 0.7464 \\
-    Target type: EM vs BB & 0.3269 & 0.0563 & 5.809 & $<.001$ & 1.3867 \\
-    Gender: Male vs Female & -0.2551 & 0.0422 & -6.047 & $<.001$ & 0.7749 \\
-    Age & -0.0305 & 0.0017 & -18.385 & $<.001$ & 0.9699 \\
-    Movie duration (s) & 0.0186 & 0.0011 & 16.819 & $<.001$ & 1.0187 \\
+    Intercept & 1.8333 & 0.0371 & 49.443 & $<.001$ & 6.2543 \\
+    Condition: AB vs NB & -0.2969 & 0.0739 & -4.016 & $<.001$ & 0.7432 \\
+    Target type: EM vs BB & 0.3247 & 0.0744 & 4.364 & $<.001$ & 1.3836 \\
+    Gender: Male vs Female & -0.2539 & 0.0882 & -2.878 & $.0040$ & 0.7758 \\
+    Age & -0.0378 & 0.0191 & -1.978 & $.0479$ & 0.9629 \\
+    Movie duration (s) & 0.0182 & 0.0041 & 4.501 & $<.001$ & 1.0184 \\
 \hline
 \end{tabular}
 \caption{GLMM full --- main effects + age + gender + movie\_duration (repeated movies excluded).}
@@ -777,7 +784,7 @@ baseline log-odds accuracy, after accounting for fixed effects.
 \hline
 Core (main effects) & 0.4203 & Between-participant variability in log-odds \\
 Interaction & 0.4205 & Same, after adding interaction \\
-Full (+ age, gender, duration) & 0.4011 & Same, after demographic controls \\
+Full (+ age, gender, duration) & 0.4016 & Same, after demographic controls \\
 \hline
 \end{tabular}
 \caption{GLMM random intercept SDs (log-odds scale; repeated movies excluded).}
